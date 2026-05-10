@@ -153,6 +153,28 @@
 
 </div>
 
+<!-- 🔥 BOTÓN FLOTANTE -->
+<button id="save-all-btn" onclick="saveAllPredictions()" style="
+    position:fixed;
+    bottom:85px;
+    right:18px;
+    z-index:999;
+
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:999px;
+
+    padding:14px 18px;
+
+    font-size:13px;
+    font-weight:bold;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.35);
+">
+    💾 Guardar todo
+</button>
+
 <script>
 
 function toggleSection(id) {
@@ -197,6 +219,37 @@ function change(id, delta) {
     }
 
     input.value = value;
+}
+
+async function saveAllPredictions() {
+
+    const forms = document.querySelectorAll(".predict-form");
+
+    let ok = 0;
+
+    for (const form of forms) {
+
+        const formData = new FormData(form);
+
+        try {
+
+            const r = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            if (r.ok) {
+                ok++;
+            }
+
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    alert("✅ Predicciones guardadas: " + ok);
+
+    location.reload();
 }
 
 // guardar scroll
