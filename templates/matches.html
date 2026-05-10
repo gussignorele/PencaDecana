@@ -1,17 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div style="text-align:center; margin-bottom:10px;">
-    <button onclick="scrollToPending()" style="
-        background:#7c3aed;
-        color:white;
-        padding:8px 12px;
-        border:none;
-        border-radius:8px;
-        font-size:12px;
+<!-- 🔥 NAV STICKY -->
+<div style="
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:#0f172a;
+    padding:8px 0;
+    margin-bottom:12px;
+">
+
+    <div style="
+        display:flex;
+        gap:6px;
+        justify-content:center;
+        flex-wrap:wrap;
     ">
-        🔥 Ir a pendientes
-    </button>
+
+        <button onclick="scrollToSection('pending-section')" style="
+            background:#7c3aed;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:7px 10px;
+            font-size:12px;
+        ">
+            ⏳ Pendientes
+        </button>
+
+        <button onclick="scrollToSection('predicted-section')" style="
+            background:#334155;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:7px 10px;
+            font-size:12px;
+        ">
+            ✅ Pronosticados
+        </button>
+
+        <button onclick="scrollToSection('closed-section')" style="
+            background:#475569;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:7px 10px;
+            font-size:12px;
+        ">
+            🔒 Cerrados
+        </button>
+
+    </div>
+
 </div>
 
 <!-- puntos -->
@@ -35,6 +76,8 @@
 </div>
 
 <!-- 🔥 PENDIENTES -->
+<div id="pending-section">
+
 <h3 style="margin:10px 0;">
     ⏳ Pendientes ({{ pending_matches|length }})
 </h3>
@@ -58,8 +101,10 @@
 
 {% endif %}
 
+</div>
+
 <!-- 🔥 YA PRONOSTICADOS -->
-<div style="margin-top:18px;">
+<div id="predicted-section" style="margin-top:18px;">
 
 <button onclick="toggleSection('predicted')" style="
     width:100%;
@@ -84,7 +129,7 @@
 </div>
 
 <!-- 🔥 CERRADOS -->
-<div style="margin-top:12px; margin-bottom:20px;">
+<div id="closed-section" style="margin-top:12px; margin-bottom:20px;">
 
 <button onclick="toggleSection('closed')" style="
     width:100%;
@@ -121,16 +166,16 @@ function toggleSection(id) {
     }
 }
 
-function scrollToPending() {
+function scrollToSection(id) {
 
-    const cards = document.querySelectorAll("[data-pending='1']");
+    const el = document.getElementById(id);
 
-    if (cards.length > 0) {
-        cards[0].scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
+    if (!el) return;
+
+    el.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
 function change(id, delta) {
