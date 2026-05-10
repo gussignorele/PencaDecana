@@ -216,7 +216,8 @@ def forgot():
 
             conn.commit()
 
-            link = url_for("reset_password", token=token, _external=True)
+            link = url_for("reset", token=token, _external=True)
+            
 
             send_email(
                 email,
