@@ -1,9 +1,11 @@
 import sqlite3
 import pandas as pd
-
-DB = "database.db"
+from app import init_db
+DB = "/data/database.db"
 
 def seed():
+    init_db()
+
     conn = sqlite3.connect(DB)
     c = conn.cursor()
 
