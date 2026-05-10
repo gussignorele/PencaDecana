@@ -4,14 +4,16 @@ from datetime import datetime
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from flask import send_from_directory
 from flask import url_for
 from flask import flash
 MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 
 app = Flask(__name__)
-app.secret_key = "dev-key"
+app.secret_key = os.getenv("SECRET_KEY", "dev-key")
 
-DB = "database.db"
+#DB = "database.db"
+DB = "/data/database.db"
 ADMINS = [u.lower() for u in ["gsignorele"]]
 PAYMENTS_ENABLED = False
 import smtplib
@@ -19,7 +21,8 @@ import uuid
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 
-UPLOAD_FOLDER = "static/avatars"
+UPLOAD_FOLDER = "/data/avatars"
+
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -110,7 +113,11 @@ def get_country_codes():
 def get_db():
     return sqlite3.connect(DB)
 
+@app.route("/avatars/<filename>")
+def avatars(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
+Y cambiá:
 def init_db():
     conn = get_db()
     c = conn.cursor()
@@ -358,7 +365,8 @@ def register():
                 img = img.resize((200, 200))
                 img.save(path, "JPEG", quality=75)
 
-                avatar = f"/static/avatars/{filename}"
+
+                avatar = f"/avatars/{filename}"
 
             except:
                 flash("Imagen inválida", "error")
@@ -433,8 +441,8 @@ def profile():
                 img = img.resize((200, 200))
                 img.save(path, "JPEG", quality=75)
 
-                avatar = f"/static/avatars/{filename}"
-
+                #avatar = f"/static/avatars/{filename}"
+                avatar = f"/avatars/{filename}"
             except:
                 flash("Imagen inválida", "error")
                 return redirect("/profile")
@@ -1181,4 +1189,5 @@ def inject_user():
         "user": session.get("user")
     }
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    #app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
