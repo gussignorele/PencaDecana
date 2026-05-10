@@ -54,7 +54,7 @@
     {{ m.match_datetime[11:16] }}
 </div>
 
-<form method="post" action="/predict">
+<form class="predict-form">
 
 <input type="hidden" name="match_id" value="{{m.id}}">
 
@@ -90,18 +90,19 @@
 
 </div>
 
-<button style="
-    margin-top:12px;
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:8px;
-    background:white;
-    color:#1e3a8a;
-    font-weight:bold;
+<!-- 🔥 estado -->
+<div style="
+    margin-top:10px;
+    text-align:center;
+    font-size:11px;
+    color:#dbeafe;
 ">
-    Predecir
-</button>
+    {% if m.user_pred %}
+        ✅ Pronosticado
+    {% else %}
+        ⏳ Sin guardar
+    {% endif %}
+</div>
 
 </form>
 
