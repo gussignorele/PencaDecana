@@ -117,7 +117,7 @@ def get_db():
 def avatars(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
-Y cambiá:
+
 def init_db():
     conn = get_db()
     c = conn.cursor()
