@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="text-align:center; margin-bottom:10px;">👥 Usuarios</h2>
+
+<!-- 🔥 RESUMEN -->
+<div style="
+    display:flex;
+    justify-content:space-around;
+    margin-bottom:12px;
+    font-size:13px;
+">
+    <div>Total: {{total}}</div>
+    <div style="color:#4ade80;">Pagaron: {{pagaron}}</div>
+    <div style="color:#f87171;">Deben: {{deben}}</div>
+</div>
+
+<!-- 🔥 FILTROS -->
+<div style="
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:14px;
+">
+    <button onclick="filterUsers('all')" class="fbtn">Todos</button>
+    <button onclick="filterUsers('paid')" class="fbtn">Pagaron</button>
+    <button onclick="filterUsers('debt')" class="fbtn">Deben</button>
+</div>
+
+{% for u in users %}
+
+<div class="user-card" data-paid="{{ '1' if u[3] else '0' }}" style="
+    background:#1e3a8a;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:12px;
+    border:1px solid #7c3aed;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+">
+
+    <!-- info -->
+    <div>
+        <div style="font-weight:bold;">{{ u[0] }}</div>
+
+        {% if u[1] %}
+        <div style="font-size:12px; color:#cbd5f5;">{{ u[1] }}</div>
+        {% endif %}
+
+        {% if u[2] %}
+        <div style="font-size:12px; color:#93c5fd;">📱 {{ u[2] }}</div>
+        {% endif %}
+    </div>
+
+    <!-- estado -->
+    <div style="display:flex; align-items:center; gap:8px;">
+
+        {% if u[3] %}
+            <span style="
+                background:#16a34a;
+                padding:6px 10px;
+                border-radius:8px;
+                font-size:12px;
+            ">Pagó</span>
+        {% else %}
+            <span style="
+                background:#dc2626;
+                padding:6px 10px;
+                border-radius:8px;
+                font-size:12px;
+            ">Debe</span>
+        {% endif %}
+
+        <a href="/admin/toggle_pay/{{u[0]}}" style="
+            font-size:12px;
+            color:#c4b5fd;
+            text-decoration:none;
+            padding:4px 8px;
+            border-radius:6px;
+            border:1px solid #7c3aed;
+        ">
+            cambiar
+        </a>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<!-- 🔥 JS FILTRO -->
+<script>
+function filterUsers(type) {
+    let cards = document.querySelectorAll(".user-card");
+
+    cards.forEach(c => {
+        let paid = c.dataset.paid;
+
+        if (type === "all") {
+            c.style.display = "flex";
+        } else if (type === "paid") {
+            c.style.display = paid === "1" ? "flex" : "none";
+        } else if (type === "debt") {
+            c.style.display = paid === "0" ? "flex" : "none";
+        }
+    });
+}
+</script>
+
+<!-- 🔥 botones estilo -->
+<style>
+.fbtn {
+    background:#7c3aed;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:12px;
+}
+</style>
+
+{% endblock %}

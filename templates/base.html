@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Penca Mundial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 0;
+        border-top: 1px solid #ddd;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .bottom-nav a {
+        flex: 1;
+        text-align: center;
+        text-decoration: none;
+        color: #162447;
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .bottom-nav a span {
+        font-size: 11px;
+    }
+
+    .bottom-nav a.active {
+        color: #7c3aed;
+        font-weight: bold;
+    }
+
+    .bottom-nav a.active::after {
+        content: "";
+        width: 20px;
+        height: 3px;
+        background: #7c3aed;
+        border-radius: 2px;
+        margin-top: 3px;
+    }
+
+    body {
+        padding-bottom: 70px;
+    }
+    </style>
+</head>
+
+<body style="background:#1e3a8a; color:white; font-family:sans-serif; margin:0;">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="padding:10px 15px;">
+      {% for category, message in messages %}
+        <div style="
+            background:#ef4444;
+            color:white;
+            padding:12px;
+            border-radius:10px;
+            margin-bottom:10px;
+            font-size:14px;
+            text-align:center;
+            box-shadow:0 4px 10px rgba(0,0,0,0.3);
+        ">
+            ⚠️ {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+{% if session.get("user") %}
+
+<a href="/profile" style="
+    position:absolute;
+    top:10px;
+    right:80px;
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:6px;
+    background:white;
+    color:#1e3a8a;
+    text-decoration:none;
+">
+    👤 {{ session.get("user") }}
+</a>
+
+<a href="/logout" style="
+    position:absolute;
+    top:10px;
+    right:10px;
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:6px;
+    background:white;
+    color:#1e3a8a;
+    text-decoration:none;
+">
+    🚪 Salir
+</a>
+
+
+{% endif %}
+
+
+<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 15px; background:#162447;">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="/static/img/dsc.png" width="35">
+        <b style="font-size:16px;">Penca Mundial</b>
+    </div>
+</div>
+
+<div style="padding:15px;">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- 🔥 NAVBAR BIEN HECHA -->
+<div class="bottom-nav">
+
+    <a href="/matches" class="{% if request.path == '/matches' %}active{% endif %}">
+        ⚽
+        <span>Partidos</span>
+    </a>
+
+    <a href="/ranking" class="{% if request.path == '/ranking' %}active{% endif %}">
+        🏆
+        <span>Ranking</span>
+    </a>
+
+    {% if session.get("is_admin") %}
+    <a href="/admin/matches" class="{% if request.path == '/admin/matches' %}active{% endif %}">
+        ⚙️
+        <span>Admin</span>
+    </a>
+
+    <a href="/admin/users" class="{% if request.path == '/admin/users' %}active{% endif %}">
+        👥
+        <span>Usuarios</span>
+    </a>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

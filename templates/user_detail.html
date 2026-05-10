@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width:300px; margin:0 auto;">
+
+<h2 style="text-align:center; margin-bottom:10px; font-size:15px;">
+    👤 {{ username }}
+</h2>
+
+{% set last_stage = None %}
+
+{% for m in matches %}
+
+{% set hit = m.finished and m.pred_home == m.real_home and m.pred_away == m.real_away %}
+
+{% if m.stage != last_stage %}
+<div style="
+    text-align:center;
+    margin:12px 0 6px;
+    font-size:12px;
+    font-weight:bold;
+    color:#ddd;
+">
+    {% if m.stage == '16' %}Dieciseisavos
+    {% elif m.stage == '8' %}Octavos
+    {% elif m.stage == '4' %}Cuartos
+    {% elif m.stage == '2' %}Semifinal
+    {% elif m.stage == '1' %}Final
+    {% else %}Grupo {{ m.stage }}
+    {% endif %}
+</div>
+
+{% set last_stage = m.stage %}
+{% endif %}
+
+<div style="
+    background:#6c3bb8;
+    border-radius:12px;
+    padding:8px;
+    margin-bottom:8px;
+    border:1px solid #7c3aed;
+">
+
+    <!-- equipos -->
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:6px;
+        font-size:12px;
+    ">
+
+        <!-- LOCAL -->
+        <div style="
+            width:42%;
+            display:flex;
+            align-items:center;
+            gap:4px;
+            justify-content:flex-start;
+        ">
+
+            {% if m.home in special_flags %}
+                <img src="{{ special_flags[m.home] }}" style="width:18px; height:12px;">
+            {% else %}
+                {% set code = country_codes.get(m.home) %}
+                {% if code %}
+                    <img src="https://flagcdn.com/w40/{{ code }}.png" style="width:18px; height:12px;">
+                {% endif %}
+            {% endif %}
+
+            <span style="
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+            ">
+                {{ m.home }}
+            </span>
+
+        </div>
+
+        <!-- VS -->
+        <div style="
+            width:16%;
+            text-align:center;
+            opacity:0.7;
+            font-size:10px;
+        ">
+            vs
+        </div>
+
+        <!-- VISITANTE -->
+        <div style="
+            width:42%;
+            display:flex;
+            align-items:center;
+            justify-content:flex-end;
+            gap:4px;
+            text-align:right;
+        ">
+
+            <span style="
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+            ">
+                {{ m.away }}
+            </span>
+
+            {% if m.away in special_flags %}
+                <img src="{{ special_flags[m.away] }}" style="width:18px; height:12px;">
+            {% else %}
+                {% set code = country_codes.get(m.away) %}
+                {% if code %}
+                    <img src="https://flagcdn.com/w40/{{ code }}.png" style="width:18px; height:12px;">
+                {% endif %}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- 🎯 -->
+    <div style="
+        margin-top:8px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+    ">
+
+        {% if m.pred_home is not none %}
+
+        <!-- predicción -->
+        <div style="
+            font-size:15px;
+            font-weight:bold;
+            line-height:1;
+            color:{% if hit %}#22c55e{% else %}white{% endif %};
+        ">
+            🎯 {{ m.pred_home }} - {{ m.pred_away }}
+        </div>
+
+        <!-- resultado real -->
+        {% if m.finished %}
+        <div style="
+            margin-top:4px;
+            font-size:11px;
+            line-height:1;
+            color:#ddd;
+        ">
+            🏁 {{ m.real_home }} - {{ m.real_away }}
+        </div>
+        {% endif %}
+
+        <!-- puntos -->
+        {% if m.pts is not none %}
+        <div style="
+            margin-top:5px;
+            min-width:38px;
+            text-align:center;
+            font-size:11px;
+            font-weight:bold;
+            padding:4px 8px;
+            border-radius:8px;
+            background:
+                {% if m.pts == 3 %}#22c55e
+                {% elif m.pts == 1 %}#facc15
+                {% else %}#ef4444{% endif %};
+            color:black;
+        ">
+            +{{ m.pts }}
+        </div>
+        {% endif %}
+
+        {% else %}
+
+        <div style="
+            margin-top:2px;
+            font-size:15px;
+        ">
+            🔒
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

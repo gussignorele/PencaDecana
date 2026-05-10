@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width:420px; margin:0 auto;">
+
+<h2 style="text-align:center; margin-bottom:10px;">⚙️ Partidos</h2>
+
+<form method="post" action="/admin/reset" style="margin-bottom:10px;">
+    <button style="
+        width:100%;
+        padding:8px;
+        background:#ef4444;
+        color:white;
+        border:none;
+        border-radius:8px;
+        font-size:12px;
+        cursor:pointer;
+    ">
+        🔥 Resetear resultados
+    </button>
+</form>
+
+<div style="text-align:center; margin-bottom:10px;">
+    <button type="button" onclick="scrollToFirstPending()" style="
+        padding:6px 10px;
+        font-size:12px;
+        border:none;
+        border-radius:6px;
+        background:#facc15;
+        color:#000;
+        cursor:pointer;
+    ">
+        ⏭ Ir al primero sin resultado
+    </button>
+</div>
+
+<!-- CREAR -->
+<form method="post" action="/admin/create_match" style="
+    background:#162447;
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:12px;
+">
+
+<div style="text-align:center; font-size:12px; margin-bottom:6px;">
+    ➕ Crear partido
+</div>
+
+<div style="display:flex; gap:6px; margin-bottom:6px;">
+    <select name="home" style="flex:1; padding:6px; border-radius:6px; border:none; min-width:0;">
+        {% for t in teams %}
+        <option value="{{t}}">{{t}}</option>
+        {% endfor %}
+    </select>
+
+    <select name="away" style="flex:1; padding:6px; border-radius:6px; border:none; min-width:0;">
+        {% for t in teams %}
+        <option value="{{t}}">{{t}}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div style="display:flex; gap:6px; margin-bottom:6px;">
+    <input type="date" name="match_date" style="flex:1; padding:6px; border-radius:6px; border:none;">
+
+    <select name="match_time" style="flex:1; padding:6px; border-radius:6px; border:none;">
+        {% for h in range(0,24) %}
+            <option value="{{ "%02d:00"|format(h) }}">{{ "%02d:00"|format(h) }}</option>
+            <option value="{{ "%02d:30"|format(h) }}">{{ "%02d:30"|format(h) }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<select name="stage" style="width:100%; padding:6px; border-radius:6px; border:none; margin-bottom:6px;">
+    <option value="16">Dieciseisavos</option>
+    <option value="8">Octavos</option>
+    <option value="4">Cuartos</option>
+    <option value="2">Semifinal</option>
+    <option value="1">Final</option>
+</select>
+
+<button style="width:100%; padding:6px;">
+    Crear
+</button>
+
+</form>
+
+<!-- 🔥 GUARDAR TODO -->
+<form method="post" action="/admin/save_all">
+
+{% for m in matches %}
+
+<div class="{% if m[4] is none or m[5] is none %}pending{% endif %}" style="
+    background:#1e3a8a;
+    border-radius:12px;
+    padding:10px;
+    margin-bottom:10px;
+    border:1px solid #7c3aed;
+">
+
+<input type="hidden" name="match_{{m[0]}}" value="1">
+
+<div style="display:grid; grid-template-columns:1fr auto 1fr; gap:6px; text-align:center; align-items:center;">
+
+<select name="home_{{m[0]}}" style="width:100%; padding:6px; border-radius:6px; border:none;">
+    {% for t in teams %}
+        <option value="{{t}}" {% if t == m[1] %}selected{% endif %}>{{t}}</option>
+    {% endfor %}
+</select>
+
+<div style="font-size:11px;">VS</div>
+
+<select name="away_{{m[0]}}" style="width:100%; padding:6px; border-radius:6px; border:none;">
+    {% for t in teams %}
+        <option value="{{t}}" {% if t == m[2] %}selected{% endif %}>{{t}}</option>
+    {% endfor %}
+</select>
+
+</div>
+
+{% set date = '' %}
+{% set current_time = '' %}
+
+{% if m[3] %}
+    {% set dt = m[3]|string %}
+    {% if 'T' in dt %}
+        {% set date = dt.split('T')[0] %}
+        {% set current_time = dt.split('T')[1][:5] %}
+    {% endif %}
+{% endif %}
+
+<div style="display:flex; gap:6px; margin-top:8px;">
+
+<input type="date" name="date_{{m[0]}}" value="{{date}}" style="flex:1; padding:6px; border-radius:6px; border:none;">
+
+<select name="time_{{m[0]}}" style="flex:1; padding:6px; border-radius:6px; border:none;">
+{% for h in range(0,24) %}
+    {% set t1 = "%02d:00"|format(h) %}
+    {% set t2 = "%02d:30"|format(h) %}
+    <option value="{{t1}}" {% if current_time == t1 %}selected{% endif %}>{{t1}}</option>
+    <option value="{{t2}}" {% if current_time == t2 %}selected{% endif %}>{{t2}}</option>
+{% endfor %}
+</select>
+
+</div>
+
+<div style="display:flex; justify-content:center; gap:10px; margin-top:8px;">
+
+<input name="gl_{{m[0]}}" value="{{m[4] if m[4] is not none else ''}}" type="number" style="width:45px; text-align:center;">
+<input name="gv_{{m[0]}}" value="{{m[5] if m[5] is not none else ''}}" type="number" style="width:45px; text-align:center;">
+
+</div>
+
+<!-- 🔥 GUARDAR INDIVIDUAL -->
+<button type="submit"
+        formaction="/admin/matches"
+        style="
+            margin-top:8px;
+            width:100%;
+            padding:6px;
+            font-size:12px;
+            border:none;
+            border-radius:6px;
+            background:white;
+            color:#1e3a8a;
+        ">
+    Guardar
+</button>
+
+</div>
+
+{% endfor %}
+
+<button style="
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:8px;
+">
+    💾 Guardar todos
+</button>
+
+</form>
+
+</div>
+
+<script>
+function scrollToFirstPending() {
+    const el = document.querySelector(".pending");
+    if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width:400px; margin:20px auto; text-align:center;">
+
+    <h2 style="margin-bottom:14px;">👤 Mi perfil</h2>
+
+    <img src="{{ avatar }}" style="
+        width:90px;
+        height:90px;
+        border-radius:50%;
+        object-fit:cover;
+        margin-bottom:14px;
+    ">
+
+    <form method="post" enctype="multipart/form-data">
+
+        <input type="email"
+               name="email"
+               value="{{ email }}"
+               placeholder="Email"
+               style="
+                   width:85%;
+                   padding:8px;
+                   margin:0 auto 10px auto;
+                   display:block;
+                   border:none;
+                   border-radius:8px;
+                   font-size:13px;
+               ">
+
+        <input name="telefono"
+               value="{{ telefono }}"
+               placeholder="Teléfono"
+               style="
+                   width:85%;
+                   padding:8px;
+                   margin:0 auto 10px auto;
+                   display:block;
+                   border:none;
+                   border-radius:8px;
+                   font-size:13px;
+               ">
+
+        <input type="file"
+               name="avatar_file"
+               style="
+                   width:85%;
+                   margin:0 auto 12px auto;
+                   display:block;
+                   font-size:12px;
+               ">
+
+        <button style="
+            width:85%;
+            padding:9px;
+            margin:0 auto;
+            display:block;
+            border:none;
+            border-radius:8px;
+            background:white;
+            color:#1e3a8a;
+            font-weight:bold;
+            font-size:13px;
+        ">
+            Guardar cambios
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,179 @@
+<style>
+input, select {
+    box-sizing: border-box;
+}
+</style>
+
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width:320px; margin:10px auto 25px auto; text-align:center;">
+
+    <h2 style="margin-bottom:10px;">
+        📝 Crear cuenta
+    </h2>
+
+    <form method="post" enctype="multipart/form-data">
+
+        <!-- USER -->
+        <input name="username" placeholder="Usuario" required
+        style="
+            width:85%;
+            padding:8px;
+            margin:0 auto 6px auto;
+            display:block;
+            border-radius:7px;
+            border:none;
+            font-size:12.5px;
+        ">
+
+        <!-- PASSWORD -->
+        <div style="
+            position:relative;
+            width:85%;
+            margin:0 auto 6px auto;
+        ">
+
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="Contraseña"
+                   required
+                   style="
+                        width:100%;
+                        padding:8px 32px 8px 8px;
+                        display:block;
+                        border-radius:7px;
+                        border:none;
+                        font-size:12.5px;
+                   ">
+
+            <span onclick="togglePassword()" style="
+                position:absolute;
+                right:9px;
+                top:50%;
+                transform:translateY(-50%);
+                cursor:pointer;
+                font-size:13px;
+                color:#555;
+            ">
+                👁️
+            </span>
+
+        </div>
+
+        <!-- TEL -->
+        <input name="telefono" placeholder="Celular" required
+        style="
+            width:85%;
+            padding:8px;
+            margin:0 auto 6px auto;
+            display:block;
+            border-radius:7px;
+            border:none;
+            font-size:12.5px;
+        ">
+
+        <!-- EMAIL -->
+        <input type="email" name="email" placeholder="Email" required
+        style="
+            width:85%;
+            padding:8px;
+            margin:0 auto 6px auto;
+            display:block;
+            border-radius:7px;
+            border:none;
+            font-size:12.5px;
+        ">
+
+        <!-- AVATARS -->
+        <div style="text-align:left; margin-bottom:4px; font-size:11.5px;">
+            Elegí un avatar
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:6px;
+            margin-bottom:8px;
+        ">
+
+            {% set avatars = [
+                ('m','/static/img/default_m.png'),
+                ('f','/static/img/default_f.png'),
+                ('f2','/static/img/default_f_dark.png'),
+                ('m_old','/static/img/default_m_old.png'),
+                ('f_old','/static/img/default_f_old.png'),
+                ('nb','/static/img/default_nb.png')
+            ] %}
+
+            {% for key, img in avatars %}
+            <label style="cursor:pointer;">
+                <input type="radio" name="avatar_tipo" value="{{key}}" style="display:none;">
+                <img src="{{img}}" style="
+                    width:100%;
+                    border-radius:50%;
+                    border:2px solid transparent;
+                ">
+            </label>
+            {% endfor %}
+
+        </div>
+
+        <!-- upload -->
+        <div style="text-align:left; font-size:11.5px; margin-bottom:4px;">
+            O subí tu imagen
+        </div>
+
+        <input type="file" name="avatar_file" accept="image/*"
+        style="width:100%; margin-bottom:8px; font-size:11.5px;">
+
+        <!-- botón -->
+        <button style="
+            width:100%;
+            padding:8px;
+            border:none;
+            border-radius:7px;
+            background:white;
+            color:#1e3a8a;
+            font-weight:bold;
+            font-size:12.5px;
+        ">
+            Registrarse
+        </button>
+
+    </form>
+
+    <div style="margin-top:8px; font-size:11.5px;">
+        ¿Ya tenés cuenta?
+        <a href="/" style="color:#c4b5fd;">Ingresar</a>
+    </div>
+
+</div>
+
+<script>
+
+function togglePassword() {
+    const p = document.getElementById("password");
+
+    if (p.type === "password") {
+        p.type = "text";
+    } else {
+        p.type = "password";
+    }
+}
+
+document.querySelectorAll("input[name='avatar_tipo']").forEach(input => {
+    input.addEventListener("change", () => {
+
+        document.querySelectorAll("label img").forEach(img => {
+            img.style.border = "2px solid transparent";
+        });
+
+        input.nextElementSibling.style.border = "2px solid gold";
+    });
+});
+
+</script>
+
+{% endblock %}

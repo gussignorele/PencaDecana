@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="text-align:center; margin-bottom:10px;">
+    <button onclick="scrollToPending()" style="
+        background:#7c3aed;
+        color:white;
+        padding:8px 12px;
+        border:none;
+        border-radius:8px;
+        font-size:12px;
+    ">
+        🔥 Ir a pendientes
+    </button>
+</div>
+
+<!-- puntos -->
+<div style="
+    background:#162447;
+    border:1px solid #7c3aed;
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:12px;
+    font-size:12px;
+    line-height:1.5;
+">
+
+    <div style="font-weight:bold; margin-bottom:4px;">
+        🏆 Sistema de puntos
+    </div>
+
+    <div>✅ Resultado exacto → <b>3 puntos</b></div>
+    <div>✅ Acertar ganador o empate → <b>1 punto</b></div>
+
+</div>
+
+<!-- 🔥 PENDIENTES -->
+<h3 style="margin:10px 0;">
+    ⏳ Pendientes ({{ pending_matches|length }})
+</h3>
+
+{% if pending_matches %}
+
+    {% for m in pending_matches %}
+        {% include "match_card.html" %}
+    {% endfor %}
+
+{% else %}
+
+<div style="
+    text-align:center;
+    opacity:0.7;
+    font-size:13px;
+    margin-bottom:16px;
+">
+    No hay partidos pendientes 👍
+</div>
+
+{% endif %}
+
+<!-- 🔥 YA PRONOSTICADOS -->
+<div style="margin-top:18px;">
+
+<button onclick="toggleSection('predicted')" style="
+    width:100%;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+    background:#334155;
+    color:white;
+    font-size:12px;
+">
+    ✅ Mostrar ya pronosticados ({{ predicted_matches|length }})
+</button>
+
+<div id="predicted" style="display:none; margin-top:10px;">
+
+    {% for m in predicted_matches %}
+        {% include "match_card.html" %}
+    {% endfor %}
+
+</div>
+
+</div>
+
+<!-- 🔥 CERRADOS -->
+<div style="margin-top:12px; margin-bottom:20px;">
+
+<button onclick="toggleSection('closed')" style="
+    width:100%;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+    background:#475569;
+    color:white;
+    font-size:12px;
+">
+    🔒 Mostrar cerrados ({{ closed_matches|length }})
+</button>
+
+<div id="closed" style="display:none; margin-top:10px;">
+
+    {% for m in closed_matches %}
+        {% include "match_card.html" %}
+    {% endfor %}
+
+</div>
+
+</div>
+
+<script>
+
+function toggleSection(id) {
+
+    const el = document.getElementById(id);
+
+    if (el.style.display === "none") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
+
+function scrollToPending() {
+
+    const cards = document.querySelectorAll("[data-pending='1']");
+
+    if (cards.length > 0) {
+        cards[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+}
+
+function change(id, delta) {
+
+    const input = document.getElementById(id);
+
+    if (!input) return;
+
+    let value = parseInt(input.value);
+
+    if (isNaN(value)) {
+        value = 0;
+    }
+
+    value += delta;
+
+    if (value < 0) {
+        value = 0;
+    }
+
+    input.value = value;
+}
+
+// guardar scroll
+document.querySelectorAll("form").forEach(form => {
+
+    form.addEventListener("submit", () => {
+        localStorage.setItem("scrollY", window.scrollY);
+    });
+
+});
+
+// restaurar scroll
+window.addEventListener("load", () => {
+
+    const y = localStorage.getItem("scrollY");
+
+    if (y !== null) {
+
+        window.scrollTo({
+            top: parseInt(y),
+            behavior: "instant"
+        });
+
+        localStorage.removeItem("scrollY");
+    }
+
+});
+
+</script>
+
+{% endblock %}

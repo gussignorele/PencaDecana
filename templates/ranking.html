@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="text-align:center; margin-bottom:12px;">🏆 Ranking</h2>
+
+{% for r in ranking %}
+
+<div style="
+    background:#1e3a8a;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:10px;
+    border:2px solid #7c3aed;
+        {% if r.pos == 1 %}gold
+        {% elif r.pos == 2 %}#c0c0c0
+        {% elif r.pos == 3 %}#cd7f32
+        {% else %}#7c3aed{% endif %};
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    {% if r.pos <= 3 %}transform:scale(1.02);{% endif %}
+">
+
+    <!-- izquierda -->
+    <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+
+        <!-- posición -->
+        <div style="
+            font-weight:bold;
+            font-size:{% if r.pos <= 3 %}18px{% else %}16px{% endif %};
+            width:28px;
+            text-align:center;
+        ">
+            {% if r.pos == 1 %}🥇
+            {% elif r.pos == 2 %}🥈
+            {% elif r.pos == 3 %}🥉
+            {% else %}{{r.pos}}
+            {% endif %}
+        </div>
+
+        <!-- avatar -->
+        <img src="{{ r.avatar or '/static/img/default_m.png' }}"
+             style="
+                width:{% if r.pos <= 3 %}42px{% else %}36px{% endif %};
+                height:{% if r.pos <= 3 %}42px{% else %}36px{% endif %};
+                border-radius:50%;
+                object-fit:cover;
+                border:{% if r.pos == 1 %}2px solid gold{% else %}none{% endif %};
+             ">
+
+        <!-- usuario -->
+        <div style="min-width:0;">
+
+            {% if r.user == user or fecha_jugada %}
+            <a href="/user/{{r.user}}" style="
+                font-weight:bold;
+                color:white;
+                text-decoration:none;
+            ">
+                {{ r.user }} {% if r.pos == 1 %}👑{% endif %}
+            </a>
+            {% else %}
+            <div style="font-weight:bold; color:#bbb;">
+                {{ r.user }} 🔒
+            </div>
+            {% endif %}
+
+            <div style="font-size:12px; color:#cbd5f5;">
+                🎯 {{ r.exactos }} exactos
+            </div>
+        </div>
+
+    </div>
+
+    <!-- derecha -->
+    <div style="
+        font-size:{% if r.pos <= 3 %}20px{% else %}18px{% endif %};
+        font-weight:bold;
+        flex-shrink:0;
+    ">
+        {{ r.pts }} pts
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:70vh;
+">
+
+<div style="
+    background:#274690;
+    padding:24px 22px 30px 22px;
+    border-radius:20px;
+    width:95%;
+    max-width:420px;
+    text-align:center;
+
+    border:2px solid #7c3aed;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+">
+
+    <h2 style="font-size:24px; margin-bottom:6px;">
+        🔐 Nueva contraseña
+    </h2>
+
+    <div style="
+        font-size:14px;
+        margin-bottom:18px;
+        color:#cbd5f5;
+        line-height:1.4;
+    ">
+        Ingresá tu nueva contraseña
+    </div>
+
+    <!-- 🔥 FLASH -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="
+              background:{% if category == 'error' %}#dc2626{% else %}#16a34a{% endif %};
+              color:white;
+              padding:10px;
+              border-radius:8px;
+              margin-bottom:12px;
+              text-align:center;
+              font-size:13px;
+          ">
+              {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post">
+
+        <input type="password"
+               name="password"
+               placeholder="Nueva contraseña"
+               required
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-bottom:10px;
+            padding:14px;
+            border-radius:10px;
+            border:none;
+            font-size:16px;
+            background:#f1f5f9;
+        ">
+
+        <input type="password"
+               name="confirm"
+               placeholder="Confirmar contraseña"
+               required
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-bottom:12px;
+            padding:14px;
+            border-radius:10px;
+            border:none;
+            font-size:16px;
+            background:#f1f5f9;
+        ">
+
+        <button type="submit" style="
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:white;
+            color:#1e3a8a;
+            font-weight:bold;
+            font-size:16px;
+        ">
+            Guardar contraseña
+        </button>
+
+    </form>
+
+</div>
+
+</div>
+
+{% endblock %}

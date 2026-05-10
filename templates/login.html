@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+@keyframes fadeInUp {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+}
+
+.login-card {
+    animation: fadeInUp 0.4s ease;
+}
+
+.btn {
+    transition: all 0.15s ease;
+}
+
+.btn:active {
+    transform: scale(0.96);
+    background:#e5e7eb;
+}
+</style>
+
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:50vh;
+">
+
+<div class="login-card" style="
+    background:#274690;
+    padding:4px 14px 12px 14px;
+    border-radius:20px;
+    width:95%;
+    max-width:420px;
+    text-align:center;
+    border:2px solid #7c3aed;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+">
+
+    <h2 style="font-size:24px; margin-bottom:10px;">
+        Penca Mundial
+    </h2>
+
+    <div style="
+        font-size:14px;
+        margin-bottom:18px;
+        color:#cbd5f5;
+        line-height:1.4;
+    ">
+        👉 <b>Registrate</b>, <b>ingresá</b><br><br>
+
+        💙 Con un único pago de <b>$150</b> jugás todo el mundial<br><br>
+
+        🤝 Colaborás con las <b>Decanas</b> y te llevás fabulosos premios 🎁<br><br>
+
+        1) Smart TV SMARTLIFE 32" HD LED<br>
+        2) Parlante AIWA Boombox Bluetooth
+    </div>
+
+    <form method="post">
+
+        <input type="text" name="username" placeholder="Usuario" required
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-bottom:12px;
+            padding:14px;
+            border-radius:10px;
+            border:none;
+            font-size:16px;
+            background:#f1f5f9;
+        ">
+
+        <!-- 🔧 PASSWORD CON OJITO -->
+        <div style="position:relative; margin-bottom:12px;">
+            <input type="password" name="password" id="passwordLogin" placeholder="Password" required
+            style="
+                width:100%;
+                box-sizing:border-box;
+                padding:14px;
+                padding-right:40px;
+                border-radius:10px;
+                border:none;
+                font-size:16px;
+                background:#f1f5f9;
+            ">
+
+            <span onclick="togglePassword()" style="
+                position:absolute;
+                right:10px;
+                top:50%;
+                transform:translateY(-50%);
+                cursor:pointer;
+                font-size:18px;
+            ">
+                👁️
+            </span>
+        </div>
+
+        <button class="btn" type="submit" style="
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:white;
+            color:#1e3a8a;
+            font-weight:bold;
+            font-size:17px;
+        ">
+            Ingresar
+        </button>
+
+    </form>
+
+    <div style="
+        margin-top:10px;
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+        font-size:14px;
+    ">
+        <a href="/forgot_password" style="color:white;">¿Olvidaste tu contraseña?</a>
+        <a href="/register" style="color:white;">Crear cuenta</a>
+    </div>
+
+</div>
+
+</div>
+
+<!-- 🔧 SCRIPT -->
+<script>
+function togglePassword() {
+    const input = document.getElementById("passwordLogin");
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+</script>
+
+{% endblock %}

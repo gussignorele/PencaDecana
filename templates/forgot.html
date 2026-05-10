@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:70vh;
+">
+
+<div style="
+    background:#274690;
+    padding:24px 22px 30px 22px;
+    border-radius:20px;
+    width:95%;
+    max-width:420px;
+    text-align:center;
+
+    border:2px solid #7c3aed;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+">
+
+    <h2 style="font-size:24px; margin-bottom:6px;">
+        🔐 Recuperar contraseña
+    </h2>
+
+    <div style="
+        font-size:14px;
+        margin-bottom:18px;
+        color:#cbd5f5;
+        line-height:1.4;
+    ">
+        Ingresá tu email y te enviamos un link para que puedas crear una nueva contraseña
+    </div>
+
+    <form method="post">
+
+        <input name="email"
+               type="email"
+               placeholder="tu@email.com"
+               required
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-bottom:12px;
+            padding:14px;
+            border-radius:10px;
+            border:none;
+            font-size:16px;
+            background:#f1f5f9;
+        ">
+
+        <button type="submit" onclick="this.disabled=true; this.form.submit();" style="
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:white;
+            color:#1e3a8a;
+            font-weight:bold;
+            font-size:16px;
+        ">
+            Enviar link
+        </button>
+
+    </form>
+
+    <div style="
+        margin-top:14px;
+        font-size:13px;
+        color:#cbd5f5;
+    ">
+        Revisá también la carpeta de spam
+    </div>
+
+    <div style="margin-top:14px;">
+        <a href="/" style="
+            color:white;
+            text-decoration:none;
+            font-size:14px;
+        ">
+            ← Volver
+        </a>
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}
