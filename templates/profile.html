@@ -42,15 +42,16 @@
                    font-size:13px;
                ">
 
-        <input type="file"
-               name="avatar_file"
-               accept="image/*"
-               style="
-                   width:85%;
-                   margin:0 auto 12px auto;
-                   display:block;
-                   font-size:12px;
-               ">
+<input type="file"
+       id="avatar_file"
+       name="avatar_file"
+       accept="image/*"
+       style="
+           width:85%;
+           margin:0 auto 12px auto;
+           display:block;
+           font-size:12px;
+       ">
 
         <button style="
             width:85%;
@@ -73,22 +74,16 @@
 
 <script>
 
-const fileInput = document.querySelector("input[name='avatar_file']");
+const fileInput = document.getElementById("avatar_file");
 const preview = document.getElementById("avatar-preview");
 
-fileInput.addEventListener("change", function() {
+fileInput.addEventListener("change", function(e) {
 
-    const file = this.files[0];
+    const file = e.target.files[0];
 
     if (!file) return;
 
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-        preview.src = e.target.result;
-    };
-
-    reader.readAsDataURL(file);
+    preview.src = URL.createObjectURL(file);
 
 });
 
