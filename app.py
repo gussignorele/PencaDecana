@@ -182,7 +182,7 @@ def is_admin():
     return user.lower() in ADMINS
 
 def send_email(to, subject, body):
-    msg = MIMEText(body)
+    msg = MIMEText(body, "html")
     msg["Subject"] = subject
     msg["From"] = EMAIL_USER
     msg["To"] = to
@@ -217,12 +217,64 @@ def forgot():
             conn.commit()
 
             link = url_for("reset", token=token, _external=True)
-            
+
 
             send_email(
                 email,
                 "Recuperar contraseña",
-                f"Hacé click para resetear:\n{link}"
+                f"""
+<div style="font-family:Arial,sans-serif; max-width:500px; margin:auto;">
+
+    <h2 style="color:#7c3aed;">
+        🔐 Recuperar contraseña
+    </h2>
+
+    <p>
+        Recibimos una solicitud para restablecer tu contraseña en
+        <b>Penca Decana</b>.
+    </p>
+
+    <p>
+        Tocá el siguiente botón para crear una nueva contraseña:
+    </p>
+
+    <div style="margin:30px 0; text-align:center;">
+
+        <a href="{link}" style="
+            background:#7c3aed;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:bold;
+            display:inline-block;
+        ">
+            Recuperar contraseña
+        </a>
+
+    </div>
+
+    <p style="font-size:13px; color:#555;">
+        Si el botón no funciona, podés copiar este link:
+    </p>
+
+    <p style="font-size:12px; word-break:break-all;">
+        {link}
+    </p>
+
+    <hr style="margin:25px 0; border:none; border-top:1px solid #ddd;">
+
+    <p style="font-size:12px; color:#777;">
+        ⚠️ Si no solicitaste este cambio, podés ignorar este correo.
+    </p>
+
+    <p style="font-size:12px; color:#777;">
+        📩 Si no encontrás el correo en tu bandeja principal,
+        revisá la carpeta Spam o Promociones.
+    </p>
+
+</div>
+"""
             )
 
         conn.close()
