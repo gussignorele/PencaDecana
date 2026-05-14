@@ -229,9 +229,11 @@ async function saveAllPredictions() {
 
     let total = 0;
     const saveBtn = document.getElementById("save-all-btn");
+    if (saveBtn.disabled) return;
 
     saveBtn.disabled = true;
     saveBtn.innerHTML = "⏳ Guardando...";
+
     for (const form of forms) {
 
         const local = form.querySelector("input[name='pred_local']").value;
@@ -244,14 +246,21 @@ async function saveAllPredictions() {
 
         total++;
 
-        const hiddenFrame = document.createElement("iframe");
-        hiddenFrame.style.display = "none";
+const hiddenFrame = document.createElement("iframe");
 
-        document.body.appendChild(hiddenFrame);
+hiddenFrame.name = "hidden_iframe_" + total;
 
-        form.target = hiddenFrame.name = "hidden_iframe_" + total;
+hiddenFrame.style.position = "absolute";
+hiddenFrame.style.width = "0";
+hiddenFrame.style.height = "0";
+hiddenFrame.style.border = "0";
+hiddenFrame.style.visibility = "hidden";
 
-        form.submit();
+document.body.appendChild(hiddenFrame);
+
+form.target = hiddenFrame.name;
+
+form.submit();
     }
 
     const toast = document.createElement("div");
@@ -281,6 +290,10 @@ saveBtn.innerHTML = "✅ Guardado";
 
 setTimeout(() => {
     toast.remove();
+
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = "💾 Guardar todo";
+
 }, 2200);
 
 
