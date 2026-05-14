@@ -228,7 +228,10 @@ async function saveAllPredictions() {
     const forms = document.querySelectorAll(".predict-form");
 
     let total = 0;
+    const saveBtn = document.getElementById("save-all-btn");
 
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = "⏳ Guardando...";
     for (const form of forms) {
 
         const local = form.querySelector("input[name='pred_local']").value;
@@ -274,14 +277,13 @@ toast.style.zIndex = "9999";
 toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.35)";
 
 document.body.appendChild(toast);
+saveBtn.innerHTML = "✅ Guardado";
 
 setTimeout(() => {
     toast.remove();
 }, 2200);
 
-    setTimeout(() => {
-        location.reload();
-    }, 1000);
+
 }
 
 // guardar scroll
