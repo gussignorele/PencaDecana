@@ -42,7 +42,14 @@
 
     <!-- info -->
     <div>
-        <div style="font-weight:bold;">{{ u[0] }}</div>
+        <div style="font-weight:bold;"><a href="/user/{{ u[0] }}"
+   style="
+       color:white;
+       text-decoration:none;
+       font-weight:bold;
+   ">
+    {{ u[0] }}
+</a></div>
 
         {% if u[1] %}
         <div style="font-size:12px; color:#cbd5f5;">{{ u[1] }}</div>
@@ -71,7 +78,7 @@
                 font-size:12px;
             ">Debe</span>
         {% endif %}
-
+<!--
         <a href="/admin/toggle_pay/{{u[0]}}" style="
             font-size:12px;
             color:#c4b5fd;
@@ -82,7 +89,7 @@
         ">
             cambiar
         </a>
-
+-->
     </div>
 
 </div>

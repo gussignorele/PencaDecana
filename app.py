@@ -1145,7 +1145,7 @@ def user_detail(username):
             else:
                 pts = 0
         # 🔒 ocultar predicción si no empezó
-        if username != current_user and not finished:
+        if username != current_user and not finished and not is_admin():
             ph = None
             pv = None
 
