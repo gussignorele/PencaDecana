@@ -49,30 +49,23 @@
                 border:{% if r.pos == 1 %}2px solid gold{% else %}none{% endif %};
              ">
 
-        <!-- usuario -->
-        <div style="min-width:0;">
+<!-- usuario -->
+<div style="min-width:0;">
 
-            {% if r.user == user or fecha_jugada %}
-            <a href="/user/{{r.user}}" style="
-                font-weight:bold;
-                color:white;
-                text-decoration:none;
-            ">
-                {{ r.user }} {% if r.pos == 1 %}👑{% endif %}
-            </a>
-            {% else %}
-            <div style="font-weight:bold; color:#bbb;">
-                {{ r.user }} 🔒
-            </div>
-            {% endif %}
+    <a href="/user/{{r.user}}" style="
+        font-weight:bold;
+        color:white;
+        text-decoration:none;
+    ">
+        {{ r.user }} {% if r.pos == 1 %}👑{% endif %}
+    </a>
 
-            <div style="font-size:12px; color:#cbd5f5;">
-                🎯 {{ r.exactos }} exactos
-            </div>
-        </div>
-
+    <div style="font-size:12px; color:#cbd5f5;">
+        🎯 {{ r.exactos }} exactos
     </div>
 
+</div>
+</div>
     <!-- derecha -->
     <div style="
         font-size:{% if r.pos <= 3 %}20px{% else %}18px{% endif %};
