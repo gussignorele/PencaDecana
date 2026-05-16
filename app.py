@@ -1174,7 +1174,81 @@ def user_detail(username):
             "Gales": url_for('static', filename='flags/wales.png'),
         }
     )
+@app.route("/match/<int:match_id>/predictions")
+def match_predictions(match_id):
 
+    if "user" not in session:
+        return redirect("/")
+
+    conn = get_db()
+    c = conn.cursor()
+
+    # partido
+    c.execute("""
+        SELECT home, away, match_datetime,
+               home_goals, away_goals
+        FROM matches
+        WHERE id=?
+    """, (match_id,))
+
+    match = c.fetchone()
+
+    if not match:
+        conn.close()
+        return redirect("/matches")
+
+    home, away, dt, gl, gv = match
+
+    from datetime import datetime
+
+    match_time = datetime.fromisoformat(dt)
+
+    if match_time.tzinfo:
+        match_time = match_time.replace(tzinfo=None)
+
+    started = datetime.now() >= match_time
+
+    # 🔒 NO empezó
+    if not started:
+        conn.close()
+        return redirect("/matches")
+
+    # predicciones
+    c.execute("""
+        SELECT
+            u.username,
+            u.avatar,
+            p.pred_home,
+            p.pred_away
+        FROM predictions p
+        JOIN users u
+            ON p.user = u.username
+        WHERE p.match_id = ?
+        ORDER BY u.username
+    """, (match_id,))
+
+    rows = c.fetchall()
+
+    predictions = []
+
+    for r in rows:
+        predictions.append({
+            "user": r[0],
+            "avatar": r[1],
+            "ph": r[2],
+            "pv": r[3]
+        })
+
+    conn.close()
+
+    return render_template(
+        "match_predictions.html",
+        predictions=predictions,
+        home=home,
+        away=away,
+        gl=gl,
+        gv=gv
+    )
 
 @app.route("/logout")
 def logout():

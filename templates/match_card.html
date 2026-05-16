@@ -116,7 +116,23 @@
         ⏳ Sin guardar
     {% endif %}
 </div>
+{% if m.started %}
+<div style="
+    margin-top:10px;
+    text-align:center;
+">
 
+    <a href="/match/{{m.id}}/predictions"
+       style="
+            color:#93c5fd;
+            text-decoration:none;
+            font-size:12px;
+       ">
+        👀 Ver jugadas
+    </a>
+
+</div>
+{% endif %}
 </form>
 
 </div>
