@@ -1232,13 +1232,30 @@ def match_predictions(match_id):
     predictions = []
 
     for r in rows:
+
+        puntos = 0
+
+        if gl is not None and gv is not None:
+
+            # exacto
+            if r[2] == gl and r[3] == gv:
+                puntos = 3
+
+            # ganador / empate
+            elif (
+                    (r[2] > r[3] and gl > gv) or
+                    (r[2] < r[3] and gl < gv) or
+                    (r[2] == r[3] and gl == gv)
+            ):
+                puntos = 1
+
         predictions.append({
             "user": r[0],
             "avatar": r[1],
             "ph": r[2],
-            "pv": r[3]
+            "pv": r[3],
+            "points": puntos
         })
-
     conn.close()
 
     return render_template(
