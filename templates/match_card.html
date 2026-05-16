@@ -1,3 +1,4 @@
+ jinja2
 <div data-pending="{{ 1 if not m.user_pred else 0 }}" style="
     background:#1e3a8a;
     border-radius:16px;
@@ -54,6 +55,35 @@
     {{ m.match_datetime[11:16] }}
 </div>
 
+<!-- resultado real -->
+{% if m.started and m.real_home is not none and m.real_away is not none %}
+
+<div style="
+    margin-top:10px;
+    text-align:center;
+">
+
+    <div style="
+        font-size:12px;
+        color:#cbd5f5;
+        margin-bottom:2px;
+    ">
+        Resultado real
+    </div>
+
+    <div style="
+        font-size:28px;
+        font-weight:bold;
+        color:white;
+        line-height:1;
+    ">
+        {{ m.real_home }} - {{ m.real_away }}
+    </div>
+
+</div>
+
+{% endif %}
+
 <form method="post" action="/predict" class="predict-form">
 
 <input type="hidden" name="match_id" value="{{m.id}}">
@@ -62,34 +92,67 @@
 
 <!-- LOCAL -->
 <div style="display:flex; align-items:center; gap:6px;">
+
+    {% if not m.started %}
     <button type="button" onclick="change('{{m.id}}_l', -1)">-</button>
+    {% endif %}
 
     <input name="pred_local"
            id="{{m.id}}_l"
            value="{{m.pred_home if m.pred_home is not none else ''}}"
            type="number"
            min="0"
-           style="width:60px; text-align:center; padding:6px;">
+           {% if m.started %}disabled{% endif %}
+           style="
+                width:60px;
+                text-align:center;
+                padding:6px;
+                {% if m.started %}
+                    background:#e2e8f0;
+                    color:#0f172a;
+                    font-weight:bold;
+                {% endif %}
+           ">
 
+    {% if not m.started %}
     <button type="button" onclick="change('{{m.id}}_l', 1)">+</button>
+    {% endif %}
+
 </div>
 
 <!-- VISITANTE -->
 <div style="display:flex; align-items:center; gap:6px;">
+
+    {% if not m.started %}
     <button type="button" onclick="change('{{m.id}}_v', -1)">-</button>
+    {% endif %}
 
     <input name="pred_visitante"
            id="{{m.id}}_v"
            value="{{m.pred_away if m.pred_away is not none else ''}}"
            type="number"
            min="0"
-           style="width:60px; text-align:center; padding:6px;">
+           {% if m.started %}disabled{% endif %}
+           style="
+                width:60px;
+                text-align:center;
+                padding:6px;
+                {% if m.started %}
+                    background:#e2e8f0;
+                    color:#0f172a;
+                    font-weight:bold;
+                {% endif %}
+           ">
 
+    {% if not m.started %}
     <button type="button" onclick="change('{{m.id}}_v', 1)">+</button>
-</div>
+    {% endif %}
 
 </div>
 
+</div>
+
+{% if not m.started %}
 <button style="
     margin-top:12px;
     width:100%;
@@ -102,20 +165,26 @@
 ">
     Pronosticar
 </button>
+{% endif %}
 
-<!-- 🔥 estado -->
+<!-- estado -->
 <div style="
     margin-top:10px;
     text-align:center;
     font-size:11px;
     color:#dbeafe;
 ">
-    {% if m.user_pred %}
+
+    {% if m.started %}
+        🔒 Cerrado
+    {% elif m.user_pred %}
         ✅ Pronosticado
     {% else %}
         ⏳ Sin guardar
     {% endif %}
+
 </div>
+
 {% if m.started %}
 <div style="
     margin-top:6px;
@@ -133,6 +202,8 @@
 
 </div>
 {% endif %}
+
 </form>
 
 </div>
+ 
