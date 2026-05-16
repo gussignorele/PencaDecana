@@ -15,7 +15,7 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-key")
 #DB = "database.db"
 DB = "/data/database.db"
 ADMINS = [u.lower() for u in ["gsignorele"]]
-PAYMENTS_ENABLED = False
+PAYMENTS_ENABLED = os.getenv("PAYMENTS_ENABLED") == "true"
 import smtplib
 import uuid
 from email.mime.text import MIMEText
