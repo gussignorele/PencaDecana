@@ -16,6 +16,7 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-key")
 DB = "/data/database.db"
 ADMINS = [u.lower() for u in ["gsignorele"]]
 PAYMENTS_ENABLED = os.getenv("PAYMENTS_ENABLED") == "true"
+ENTRY_PRICE = os.getenv("ENTRY_PRICE", "200")
 import smtplib
 import uuid
 from email.mime.text import MIMEText
@@ -1351,7 +1352,8 @@ def admin_users():
 def inject_user():
     return {
         "is_admin": is_admin(),
-        "user": session.get("user")
+        "user": session.get("user"),
+        "ENTRY_PRICE": ENTRY_PRICE
     }
 if __name__ == "__main__":
     #app.run(host="0.0.0.0", port=5000, debug=True)

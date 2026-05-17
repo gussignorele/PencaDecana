@@ -94,8 +94,40 @@ VS
 <!-- ========================= -->
 <!-- PARTIDO CERRADO -->
 <!-- ========================= -->
+{% if not paid and not is_admin %}
 
-{% if m.started %}
+<div style="
+    margin-top:14px;
+    background:rgba(255,255,255,0.06);
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+">
+
+    <div style="
+        font-size:16px;
+        font-weight:bold;
+        margin-bottom:10px;
+    ">
+        🔒 Debés pagar para participar
+    </div>
+
+    <a href="/crear_pago" style="
+        display:inline-block;
+        padding:10px 16px;
+        border-radius:10px;
+        background:white;
+        color:#1e3a8a;
+        font-weight:bold;
+        text-decoration:none;
+    ">
+        💳 Pagar ahora
+    </a>
+
+</div>
+
+{% elif m.started %}
+
 
 <div style="
     margin-top:14px;
