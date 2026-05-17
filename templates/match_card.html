@@ -123,7 +123,7 @@ VS
             font-weight:bold;
             line-height:1;
         ">
-            {{ m.real_home }} - {{ m.real_away }}
+            {{ m.home_goals }} - {{ m.away_goals }}
         </div>
 
     </div>
@@ -158,18 +158,18 @@ VS
                 font-weight:bold;
             ">
 
-                {% if m.real_home == m.pred_home and m.real_away == m.pred_away %}
+                {% if m.home_goals == m.pred_home and m.away_goals == m.pred_away %}
 
                     <span style="color:#86efac;">
                         🟢 Exacto · +3 puntos
                     </span>
 
                 {% elif
-                    (m.real_home > m.real_away and m.pred_home > m.pred_away)
+                    (m.home_goals > m.away_goals and m.pred_home > m.pred_away)
                     or
-                    (m.real_home < m.real_away and m.pred_home < m.pred_away)
+                    (m.home_goals < m.away_goals and m.pred_home < m.pred_away)
                     or
-                    (m.real_home == m.real_away and m.pred_home == m.pred_away)
+                    (m.home_goals == m.away_goals and m.pred_home == m.pred_away)
                 %}
 
                     <span style="color:#93c5fd;">
