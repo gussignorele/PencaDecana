@@ -1038,17 +1038,30 @@ def ranking():
     rows = c.fetchall()  # 🔥 ESTO VA ACÁ
 
     ranking = []
-    pos = 1
+
+    last_pts = None
+    last_exactos = None
+    pos = 0
 
     for r in rows:
+
+        pts = r[2] or 0
+        exactos = r[3] or 0
+
+        # mismo puesto si empatan
+        if pts != last_pts or exactos != last_exactos:
+            pos += 1
+
         ranking.append({
             "pos": pos,
             "user": r[0],
             "avatar": r[1],
-            "pts": r[2] or 0,
-            "exactos": r[3] or 0
+            "pts": pts,
+            "exactos": exactos
         })
-        pos += 1
+
+        last_pts = pts
+        last_exactos = exactos
 
     # 🔥 saber si terminó todo
     c.execute("SELECT MAX(match_datetime) FROM matches")
@@ -1174,6 +1187,14 @@ def user_detail(username):
             "Gales": url_for('static', filename='flags/wales.png'),
         }
     )
+
+
+
+@app.route("/desempate")
+def desempate():
+    return render_template("desempate.html")
+
+
 @app.route("/match/<int:match_id>/predictions")
 def match_predictions(match_id):
 

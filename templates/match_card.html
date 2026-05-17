@@ -1,14 +1,18 @@
- jinja2
 <div data-pending="{{ 1 if not m.user_pred else 0 }}" style="
     background:#1e3a8a;
     border-radius:16px;
     padding:14px;
     margin-bottom:12px;
-    border:2px solid {% if not m.user_pred %}#a78bfa{% else %}#7c3aed{% endif %};
+    border:2px solid {% if not m.user_pred and not m.started %}#a78bfa{% else %}#7c3aed{% endif %};
 ">
 
 <!-- fase -->
-<div style="text-align:center; font-size:12px; color:#cbd5f5; margin-bottom:6px;">
+<div style="
+    text-align:center;
+    font-size:12px;
+    color:#cbd5f5;
+    margin-bottom:6px;
+">
 {% if m.stage == "16" %}Dieciseisavos
 {% elif m.stage == "8" %}Octavos
 {% elif m.stage == "4" %}Cuartos
@@ -19,140 +23,283 @@
 </div>
 
 <!-- equipos -->
-<div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; text-align:center; gap:6px;">
+<div style="
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    text-align:center;
+    gap:6px;
+">
 
+<!-- local -->
 <div>
+
     {% if m.home in special_flags %}
-        <img src="{{ special_flags[m.home] }}" style="width:32px; height:20px; object-fit:cover;">
+        <img src="{{ special_flags[m.home] }}"
+             style="width:32px; height:20px; object-fit:cover;">
     {% else %}
         {% set code = country_codes.get(m.home) %}
         {% if code %}
-            <img src="https://flagcdn.com/w40/{{ code }}.png" style="width:32px; height:20px; object-fit:cover;">
+            <img src="https://flagcdn.com/w40/{{ code }}.png"
+                 style="width:32px; height:20px; object-fit:cover;">
         {% endif %}
     {% endif %}
-    <div style="margin-top:4px;">{{ m.home }}</div>
+
+    <div style="margin-top:4px;">
+        {{ m.home }}
+    </div>
+
 </div>
 
-<div style="font-size:12px;">VS</div>
+<div style="
+    font-size:12px;
+    color:#cbd5f5;
+">
+VS
+</div>
 
+<!-- visitante -->
 <div>
+
     {% if m.away in special_flags %}
-        <img src="{{ special_flags[m.away] }}" style="width:32px; height:20px; object-fit:cover;">
+        <img src="{{ special_flags[m.away] }}"
+             style="width:32px; height:20px; object-fit:cover;">
     {% else %}
         {% set code = country_codes.get(m.away) %}
         {% if code %}
-            <img src="https://flagcdn.com/w40/{{ code }}.png" style="width:32px; height:20px; object-fit:cover;">
+            <img src="https://flagcdn.com/w40/{{ code }}.png"
+                 style="width:32px; height:20px; object-fit:cover;">
         {% endif %}
     {% endif %}
-    <div style="margin-top:4px;">{{ m.away }}</div>
+
+    <div style="margin-top:4px;">
+        {{ m.away }}
+    </div>
+
 </div>
 
 </div>
 
 <!-- fecha -->
-<div style="text-align:center; font-size:12px; color:#cbd5f5; margin-top:6px;">
+<div style="
+    text-align:center;
+    font-size:12px;
+    color:#cbd5f5;
+    margin-top:6px;
+">
     {{ m.match_datetime[8:10] }}/{{ m.match_datetime[5:7] }}
     {{ m.match_datetime[11:16] }}
 </div>
 
-<!-- resultado real -->
-{% if m.started and m.real_home is not none and m.real_away is not none %}
+<!-- ========================= -->
+<!-- PARTIDO CERRADO -->
+<!-- ========================= -->
 
+{% if m.started %}
+
+<div style="
+    margin-top:14px;
+    background:rgba(255,255,255,0.06);
+    border-radius:12px;
+    padding:12px;
+">
+
+    <!-- resultado real -->
+    <div style="
+        text-align:center;
+        margin-bottom:14px;
+    ">
+
+        <div style="
+            font-size:12px;
+            color:#cbd5f5;
+            margin-bottom:4px;
+        ">
+            Resultado final
+        </div>
+
+        <div style="
+            font-size:30px;
+            font-weight:bold;
+            line-height:1;
+        ">
+            {{ m.real_home }} - {{ m.real_away }}
+        </div>
+
+    </div>
+
+    <!-- pronóstico usuario -->
+    <div style="
+        text-align:center;
+    ">
+
+        <div style="
+            font-size:12px;
+            color:#cbd5f5;
+            margin-bottom:4px;
+        ">
+            Tu pronóstico
+        </div>
+
+        {% if m.pred_home is not none and m.pred_away is not none %}
+
+            <div style="
+                font-size:24px;
+                font-weight:bold;
+                line-height:1;
+            ">
+                {{ m.pred_home }} - {{ m.pred_away }}
+            </div>
+
+            <!-- puntos -->
+            <div style="
+                margin-top:10px;
+                font-size:13px;
+                font-weight:bold;
+            ">
+
+                {% if m.real_home == m.pred_home and m.real_away == m.pred_away %}
+
+                    <span style="color:#86efac;">
+                        🟢 Exacto · +3 puntos
+                    </span>
+
+                {% elif
+                    (m.real_home > m.real_away and m.pred_home > m.pred_away)
+                    or
+                    (m.real_home < m.real_away and m.pred_home < m.pred_away)
+                    or
+                    (m.real_home == m.real_away and m.pred_home == m.pred_away)
+                %}
+
+                    <span style="color:#93c5fd;">
+                        🔵 Acertaste resultado · +1 punto
+                    </span>
+
+                {% else %}
+
+                    <span style="color:#fca5a5;">
+                        🔴 Sin puntos
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        {% else %}
+
+            <div style="
+                margin-top:6px;
+                color:#cbd5f5;
+                font-size:14px;
+            ">
+                ⚪ No pronosticado
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ver pronósticos -->
 <div style="
     margin-top:10px;
     text-align:center;
 ">
 
-    <div style="
-        font-size:12px;
-        color:#cbd5f5;
-        margin-bottom:2px;
-    ">
-        Resultado real
-    </div>
-
-    <div style="
-        font-size:28px;
-        font-weight:bold;
-        color:white;
-        line-height:1;
-    ">
-        {{ m.real_home }} - {{ m.real_away }}
-    </div>
+    <a href="/match/{{m.id}}/predictions"
+       style="
+            color:#93c5fd;
+            text-decoration:none;
+            font-size:12px;
+       ">
+        👥 Ver pronósticos
+    </a>
 
 </div>
 
-{% endif %}
+<!-- ========================= -->
+<!-- PARTIDO ABIERTO -->
+<!-- ========================= -->
+
+{% else %}
 
 <form method="post" action="/predict" class="predict-form">
 
 <input type="hidden" name="match_id" value="{{m.id}}">
 
-<div style="display:flex; justify-content:center; gap:12px; margin-top:12px;">
+<div style="
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:14px;
+">
 
-<!-- LOCAL -->
-<div style="display:flex; align-items:center; gap:6px;">
+<!-- local -->
+<div style="
+    display:flex;
+    align-items:center;
+    gap:6px;
+">
 
-    {% if not m.started %}
-    <button type="button" onclick="change('{{m.id}}_l', -1)">-</button>
-    {% endif %}
+    <button type="button"
+            onclick="change('{{m.id}}_l', -1)">
+        -
+    </button>
 
-    <input name="pred_local"
-           id="{{m.id}}_l"
-           value="{{m.pred_home if m.pred_home is not none else ''}}"
-           type="number"
-           min="0"
-           {% if m.started %}disabled{% endif %}
-           style="
-                width:60px;
-                text-align:center;
-                padding:6px;
-                {% if m.started %}
-                    background:#e2e8f0;
-                    color:#0f172a;
-                    font-weight:bold;
-                {% endif %}
-           ">
+    <input
+        name="pred_local"
+        id="{{m.id}}_l"
+        value="{{m.pred_home if m.pred_home is not none else ''}}"
+        type="number"
+        min="0"
+        style="
+            width:60px;
+            text-align:center;
+            padding:6px;
+        ">
 
-    {% if not m.started %}
-    <button type="button" onclick="change('{{m.id}}_l', 1)">+</button>
-    {% endif %}
-
-</div>
-
-<!-- VISITANTE -->
-<div style="display:flex; align-items:center; gap:6px;">
-
-    {% if not m.started %}
-    <button type="button" onclick="change('{{m.id}}_v', -1)">-</button>
-    {% endif %}
-
-    <input name="pred_visitante"
-           id="{{m.id}}_v"
-           value="{{m.pred_away if m.pred_away is not none else ''}}"
-           type="number"
-           min="0"
-           {% if m.started %}disabled{% endif %}
-           style="
-                width:60px;
-                text-align:center;
-                padding:6px;
-                {% if m.started %}
-                    background:#e2e8f0;
-                    color:#0f172a;
-                    font-weight:bold;
-                {% endif %}
-           ">
-
-    {% if not m.started %}
-    <button type="button" onclick="change('{{m.id}}_v', 1)">+</button>
-    {% endif %}
+    <button type="button"
+            onclick="change('{{m.id}}_l', 1)">
+        +
+    </button>
 
 </div>
 
+<!-- visitante -->
+<div style="
+    display:flex;
+    align-items:center;
+    gap:6px;
+">
+
+    <button type="button"
+            onclick="change('{{m.id}}_v', -1)">
+        -
+    </button>
+
+    <input
+        name="pred_visitante"
+        id="{{m.id}}_v"
+        value="{{m.pred_away if m.pred_away is not none else ''}}"
+        type="number"
+        min="0"
+        style="
+            width:60px;
+            text-align:center;
+            padding:6px;
+        ">
+
+    <button type="button"
+            onclick="change('{{m.id}}_v', 1)">
+        +
+    </button>
+
 </div>
 
-{% if not m.started %}
+</div>
+
 <button style="
     margin-top:12px;
     width:100%;
@@ -163,9 +310,12 @@
     color:#1e3a8a;
     font-weight:bold;
 ">
-    Pronosticar
+    {% if m.user_pred %}
+        Actualizar pronóstico
+    {% else %}
+        Guardar pronóstico
+    {% endif %}
 </button>
-{% endif %}
 
 <!-- estado -->
 <div style="
@@ -175,9 +325,7 @@
     color:#dbeafe;
 ">
 
-    {% if m.started %}
-        🔒 Cerrado
-    {% elif m.user_pred %}
+    {% if m.user_pred %}
         ✅ Pronosticado
     {% else %}
         ⏳ Sin guardar
@@ -185,25 +333,8 @@
 
 </div>
 
-{% if m.started %}
-<div style="
-    margin-top:6px;
-    text-align:center;
-">
-
-    <a href="/match/{{m.id}}/predictions"
-       style="
-            color:#93c5fd;
-            text-decoration:none;
-            font-size:11px;
-       ">
-        👥 Ver pronósticos
-    </a>
-
-</div>
-{% endif %}
-
 </form>
 
+{% endif %}
+
 </div>
- 
