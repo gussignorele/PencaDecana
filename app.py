@@ -545,14 +545,14 @@ def crear_pago():
         "items": [{
             "title": "Penca Mundial",
             "quantity": 1,
-            "unit_price": 150
+            "unit_price": int(ENTRY_PRICE)
         }],
         "metadata": {"user": user},
-        "notification_url": "https://TU-APP.onrender.com/webhook",
+        "notification_url": "https://pencadecana.onrender.com/webhook",
         "back_urls": {
-            "success": "/matches",
-            "failure": "/matches",
-            "pending": "/matches"
+            "success": "https://pencadecana.onrender.com/matches",
+            "failure": "https://pencadecana.onrender.com/matches",
+            "pending": "https://pencadecana.onrender.com/matches"
         },
         "auto_return": "approved"
     }
