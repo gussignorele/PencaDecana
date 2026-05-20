@@ -173,7 +173,45 @@ document.querySelectorAll("input[name='avatar_tipo']").forEach(input => {
         input.nextElementSibling.style.border = "2px solid gold";
     });
 });
+const fileInput = document.querySelector("input[name='avatar_file']");
 
+const preview = document.createElement("img");
+
+preview.style.width = "90px";
+preview.style.height = "90px";
+preview.style.objectFit = "cover";
+preview.style.borderRadius = "50%";
+preview.style.display = "none";
+preview.style.margin = "8px auto";
+preview.style.border = "2px solid gold";
+
+fileInput.insertAdjacentElement("afterend", preview);
+
+fileInput.addEventListener("change", (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(ev) {
+
+        preview.src = ev.target.result;
+        preview.style.display = "block";
+
+        // sacar selección de avatars default
+        document.querySelectorAll("input[name='avatar_tipo']").forEach(r => {
+            r.checked = false;
+        });
+
+        document.querySelectorAll("label img").forEach(img => {
+            img.style.border = "2px solid transparent";
+        });
+    };
+
+    reader.readAsDataURL(file);
+});
 </script>
 
 {% endblock %}

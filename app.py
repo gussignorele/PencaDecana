@@ -764,7 +764,28 @@ def toggle_pay(username):
     return redirect("/admin/users")
 
 
+@app.route("/admin/set_paid/<username>")
+def admin_set_paid(username):
 
+    if "user" not in session:
+        return redirect("/")
+
+    if session["user"] not in ADMINS:
+        return redirect("/")
+
+    conn = get_db()
+    c = conn.cursor()
+
+    c.execute("""
+        UPDATE users
+        SET paid=1
+        WHERE username=?
+    """, (username,))
+
+    conn.commit()
+    conn.close()
+
+    return f"{username} habilitado"
 
 @app.route("/matches")
 def matches():
@@ -772,7 +793,22 @@ def matches():
         return redirect("/")
 
     user = session["user"]
+    # 🔥 fallback MP por si webhook falla
 
+    payment_status = request.args.get("collection_status")
+
+    if payment_status == "approved":
+        conn = get_db()
+        c = conn.cursor()
+
+        c.execute("""
+            UPDATE users
+            SET paid=1
+            WHERE username=?
+        """, (user,))
+
+        conn.commit()
+        conn.close()
     conn = get_db()
     c = conn.cursor()
 
