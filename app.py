@@ -953,7 +953,13 @@ def predict():
     c = conn.cursor()
 
     # 🔒 verificar pago
-    if PAYMENTS_ENABLED and not is_admin():
+
+    admin = user in ADMINS
+    print("USER:", user)
+    print("ADMIN:", admin)
+    print("PAYMENTS_ENABLED:", PAYMENTS_ENABLED)
+    if PAYMENTS_ENABLED and not admin:
+    #if PAYMENTS_ENABLED and not is_admin():
         c.execute("SELECT paid FROM users WHERE username=?", (user,))
         row = c.fetchone()
 
