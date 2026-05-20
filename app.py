@@ -1173,24 +1173,7 @@ def user_detail(username):
         FROM matches m
         LEFT JOIN predictions p
             ON m.id = p.match_id AND p.user = ?
-        ORDER BY 
-            CASE m.stage
-                WHEN 'A' THEN 1
-                WHEN 'B' THEN 2
-                WHEN 'C' THEN 3
-                WHEN 'D' THEN 4
-                WHEN 'E' THEN 5
-                WHEN 'F' THEN 6
-                WHEN 'G' THEN 7
-                WHEN 'H' THEN 8
-                WHEN '16' THEN 9
-                WHEN '8' THEN 10
-                WHEN '4' THEN 11
-                WHEN '2' THEN 12
-                WHEN '1' THEN 13
-                ELSE 99
-            END,
-            m.match_datetime
+        ORDER BY m.match_datetime
     """, (username,))
     rows = c.fetchall()
     conn.close()
