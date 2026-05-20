@@ -94,7 +94,7 @@ VS
 <!-- ========================= -->
 <!-- PARTIDO CERRADO -->
 <!-- ========================= -->
-{% if not paid and not is_admin %}
+{% if show_pay_banner and not is_admin_user %}
 
 <div style="
     margin-top:14px;
