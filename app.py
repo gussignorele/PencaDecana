@@ -1379,6 +1379,37 @@ def admin_reset():
 
     return redirect("/admin/matches")
 
+@app.route("/admin/delete_user/<username>")
+def delete_user(username):
+
+    if not is_admin():
+        return redirect("/")
+
+    # evitar borrarse a sí mismo
+    if username == session["user"]:
+        return "No podés eliminarte"
+
+    conn = get_db()
+    c = conn.cursor()
+
+    # borrar predicciones
+    c.execute("""
+        DELETE FROM predictions
+        WHERE user=?
+    """, (username,))
+
+    # borrar usuario
+    c.execute("""
+        DELETE FROM users
+        WHERE username=?
+    """, (username,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/users")
+
+
 
 @app.route("/admin/users")
 def admin_users():

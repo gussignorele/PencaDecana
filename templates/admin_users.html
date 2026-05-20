@@ -61,7 +61,12 @@
     </div>
 
     <!-- estado -->
-    <div style="display:flex; align-items:center; gap:8px;">
+   <div style="
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+">
 
         {% if u[3] %}
             <span style="
@@ -78,6 +83,18 @@
                 font-size:12px;
             ">Debe</span>
         {% endif %}
+       <a href="/admin/delete_user/{{u[0]}}"
+   onclick="return confirm('¿Eliminar usuario {{u[0]}}?')"
+   style="
+        background:#991b1b;
+        color:white;
+        text-decoration:none;
+        font-size:11px;
+        padding:5px 8px;
+        border-radius:6px;
+   ">
+    🗑 Eliminar
+</a>
 <!--
         <a href="/admin/toggle_pay/{{u[0]}}" style="
             font-size:12px;
