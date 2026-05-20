@@ -919,7 +919,7 @@ def matches():
 
         else:
             pending_matches.append(m)
-
+    is_admin_user = user == "gsignorele"
     return render_template(
         "matches.html",
         pending_matches=pending_matches,
@@ -930,6 +930,7 @@ def matches():
         aciertos=aciertos,
         show_pay_banner=show_pay_banner,
         country_codes=get_country_codes(),
+        is_admin_user=is_admin_user,
         special_flags={
             "Escocia": url_for('static', filename='flags/scotland.png'),
             "Inglaterra": url_for('static', filename='flags/england.png'),
