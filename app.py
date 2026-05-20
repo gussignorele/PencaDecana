@@ -571,30 +571,57 @@ def crear_pago():
         return f"Error MercadoPago: {data}"
 
     return redirect(data["init_point"])
+
+
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.json
 
-    if data.get("type") == "payment":
-        payment_id = data["data"]["id"]
+    try:
+
+        payment_id = request.args.get("data.id")
+
+        if not payment_id:
+            return "no payment id", 200
 
         r = requests.get(
             f"https://api.mercadopago.com/v1/payments/{payment_id}",
-            headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
+            headers={
+                "Authorization": f"Bearer {MP_ACCESS_TOKEN}"
+            }
         )
 
         payment = r.json()
 
-        if payment["status"] == "approved":
-            user = payment["metadata"]["user"]
+        print("MP PAYMENT:", payment)
 
-            conn = get_db()
-            c = conn.cursor()
-            c.execute("UPDATE users SET paid=1 WHERE username=?", (user,))
-            conn.commit()
-            conn.close()
+        if payment.get("status") == "approved":
 
-    return "OK"
+            user = payment.get("metadata", {}).get("user")
+
+            if user:
+
+                conn = get_db()
+                c = conn.cursor()
+
+                c.execute("""
+                    UPDATE users
+                    SET paid=1
+                    WHERE username=?
+                """, (user,))
+
+                conn.commit()
+                conn.close()
+
+                print("USER ENABLED:", user)
+
+        return "OK", 200
+
+    except Exception as e:
+
+        print("WEBHOOK ERROR:", str(e))
+
+        return "ERROR", 500
 
 
 
