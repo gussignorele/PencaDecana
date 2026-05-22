@@ -5,12 +5,26 @@ import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from flask import send_from_directory
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+
 from flask import url_for
 from flask import flash
 MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-key")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["MAX_CONTENT_LENGTH"] = 3 * 1024 * 1024
+
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=[]
+)
 
 #DB = "database.db"
 DB = "/data/database.db"
@@ -343,10 +357,17 @@ def reset(token):
 # LOGIN / REGISTER
 # =========================
 @app.route("/", methods=["GET", "POST"])
+@limiter.limit("10 per minute")
 def login():
     if request.method == "POST":
         username = request.form["username"].strip().lower()
         password = request.form["password"]
+
+        import re
+
+        if not re.match(r"^[a-z0-9_]{3,20}$", username):
+            flash("Usuario o contraseña incorrectos", "error")
+            return redirect("/")
 
         conn = get_db()
         c = conn.cursor()
@@ -365,16 +386,33 @@ def login():
 
     return render_template("login.html", full_screen=True)
 
+from flask import jsonify
+from flask_limiter.errors import RateLimitExceeded
+
+@app.errorhandler(RateLimitExceeded)
+def ratelimit_handler(e):
+    return "Demasiados intentos. Esperá un minuto.", 429
+
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form["username"].strip().lower()
+
+        import re
+
+        if not re.match(r"^[a-z0-9_]{3,20}$", username):
+            flash("Usuario inválido", "error")
+            return redirect("/register")
         password = request.form["password"]
         email = request.form["email"]
         telefono = request.form["telefono"]
+        if "@" not in email or "." not in email:
+            flash("Email inválido", "error")
+            return redirect("/register")
 
-        if len(password) < 4:
+        if len(password) < 6:
             flash("La contraseña es muy corta", "error")
             return redirect("/register")
 
