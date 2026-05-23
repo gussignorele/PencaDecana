@@ -127,7 +127,7 @@ VS
 
 </div>
 
-{% elif m.started %}
+{% elif m.home_goals is not none and m.away_goals is not none %}
 
 
 <div style="
@@ -255,6 +255,17 @@ VS
 <!-- ========================= -->
 <!-- PARTIDO ABIERTO -->
 <!-- ========================= -->
+{% elif m.started %}
+
+<div style="
+    margin-top:14px;
+    background:rgba(255,255,255,0.06);
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+">
+    ⏳ Partido en juego / resultado pendiente
+</div>
 
 {% else %}
 
