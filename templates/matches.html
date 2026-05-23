@@ -241,7 +241,7 @@ async function saveAllPredictions() {
     if (predictedDiv) {
         predictedDiv.style.display = "block";
     }
-
+    const currentScroll = window.scrollY;
     for (const form of forms) {
 
         const local =
@@ -310,9 +310,16 @@ async function saveAllPredictions() {
     toast.style.zIndex = "9999";
 
     document.body.appendChild(toast);
-
     saveBtn.innerHTML = "✅ Guardado";
 
+    setTimeout(() => {
+        saveBtn.innerHTML = "💾 Guardar todo";
+        saveBtn.disabled = false;
+    }, 1500);
+    window.scrollTo({
+        top: currentScroll,
+        behavior: "instant"
+    });
     if (pendingCards.length === 0) {
         saveBtn.style.display = "none";
     }
@@ -322,7 +329,7 @@ async function saveAllPredictions() {
     }, 2500);
 }
 
-// guardar scroll
+// --------------- guardar scroll
 document.querySelectorAll("form").forEach(form => {
 
     form.addEventListener("submit", () => {
