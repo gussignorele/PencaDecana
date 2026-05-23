@@ -228,75 +228,98 @@ async function saveAllPredictions() {
     const forms = document.querySelectorAll(".predict-form");
 
     let total = 0;
+
     const saveBtn = document.getElementById("save-all-btn");
+
     if (saveBtn.disabled) return;
 
     saveBtn.disabled = true;
     saveBtn.innerHTML = "⏳ Guardando...";
 
+    const predictedDiv = document.getElementById("predicted");
+
+    if (predictedDiv) {
+        predictedDiv.style.display = "block";
+    }
+
     for (const form of forms) {
 
-        const local = form.querySelector("input[name='pred_local']").value;
-        const visitante = form.querySelector("input[name='pred_visitante']").value;
+        const local =
+            form.querySelector("input[name='pred_local']").value;
 
-        // evitar guardar vacíos
+        const visitante =
+            form.querySelector("input[name='pred_visitante']").value;
+
         if (local === "" || visitante === "") {
             continue;
         }
 
         total++;
 
-const hiddenFrame = document.createElement("iframe");
+        const hiddenFrame = document.createElement("iframe");
 
-hiddenFrame.name = "hidden_iframe_" + total;
+        hiddenFrame.name = "hidden_iframe_" + total;
+        hiddenFrame.style.display = "none";
 
-hiddenFrame.style.position = "absolute";
-hiddenFrame.style.width = "0";
-hiddenFrame.style.height = "0";
-hiddenFrame.style.border = "0";
-hiddenFrame.style.visibility = "hidden";
+        document.body.appendChild(hiddenFrame);
 
-document.body.appendChild(hiddenFrame);
+        form.target = hiddenFrame.name;
 
-form.target = hiddenFrame.name;
+        form.submit();
 
-form.submit();
+        const card = form.closest("div[data-pending]");
+
+        if (card) {
+
+            card.setAttribute("data-pending", "0");
+
+            card.style.opacity = "0.8";
+
+            predictedDiv.prepend(card);
+        }
+    }
+
+    const pendingCards =
+        document.querySelectorAll(
+            "#pending-section div[data-pending='1']"
+        );
+
+    const pendingTitle =
+        document.querySelector("#pending-section h3");
+
+    if (pendingTitle) {
+        pendingTitle.innerHTML =
+            `⏳ Pendientes (${pendingCards.length})`;
     }
 
     const toast = document.createElement("div");
 
-toast.innerHTML = "✅ Pronósticos guardados: " + total;
+    toast.innerHTML =
+        "✅ Pronósticos guardados: " + total;
 
-toast.style.position = "fixed";
-toast.style.bottom = "140px";
-toast.style.left = "50%";
-toast.style.transform = "translateX(-50%)";
+    toast.style.position = "fixed";
+    toast.style.bottom = "140px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = "#22c55e";
+    toast.style.color = "white";
+    toast.style.padding = "12px 18px";
+    toast.style.borderRadius = "12px";
+    toast.style.fontSize = "13px";
+    toast.style.fontWeight = "bold";
+    toast.style.zIndex = "9999";
 
-toast.style.background = "#22c55e";
-toast.style.color = "white";
+    document.body.appendChild(toast);
 
-toast.style.padding = "12px 18px";
-toast.style.borderRadius = "12px";
+    saveBtn.innerHTML = "✅ Guardado";
 
-toast.style.fontSize = "13px";
-toast.style.fontWeight = "bold";
+    if (pendingCards.length === 0) {
+        saveBtn.style.display = "none";
+    }
 
-toast.style.zIndex = "9999";
-
-toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.35)";
-
-document.body.appendChild(toast);
-saveBtn.innerHTML = "✅ Guardado";
-
-setTimeout(() => {
-    toast.remove();
-
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = "💾 Guardar todo";
-
-}, 2200);
-
-
+    setTimeout(() => {
+        toast.remove();
+    }, 2500);
 }
 
 // guardar scroll
