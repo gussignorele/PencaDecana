@@ -1,4 +1,8 @@
-<div data-pending="{{ 1 if not m.user_pred else 0 }}" style="
+<div
+class="match-card"
+data-stage="{{m.stage}}"
+data-pending="{{ 1 if not m.user_pred else 0 }}"
+style="
     background:#1e3a8a;
     border-radius:16px;
     padding:14px;

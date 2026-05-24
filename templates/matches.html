@@ -77,7 +77,22 @@
 
 <!-- 🔥 PENDIENTES -->
 <div id="pending-section">
+<div style="
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
+    margin-bottom:12px;
+">
 
+<button class="stage-filter" onclick="filterStage('all', this)" type="button">Todos</button>
+<button class="stage-filter" onclick="filterStage('group', this)" type="button">Grupos</button>
+<button class="stage-filter" onclick="filterStage('16', this)" type="button">16avos</button>
+<button class="stage-filter" onclick="filterStage('8', this)" type="button">8vos</button>
+<button class="stage-filter" onclick="filterStage('4', this)" type="button">Cuartos</button>
+<button class="stage-filter" onclick="filterStage('2', this)" type="button">Semi</button>
+<button class="stage-filter" onclick="filterStage('1', this)" type="button">Final</button>
+
+</div>
 <h3 style="margin:10px 0;">
     ⏳ Pendientes ({{ pending_matches|length }})
 </h3>
@@ -222,7 +237,47 @@ function change(id, delta) {
 
     input.value = value;
 }
+function filterStage(stage, btn){
 
+    document
+        .querySelectorAll(".stage-filter")
+        .forEach(b => {
+            b.style.background = "white";
+            b.style.color = "black";
+        });
+
+    if(btn){
+        btn.style.background = "#7c3aed";
+        btn.style.color = "white";
+    }
+
+    const cards =
+        document.querySelectorAll(".match-card");
+
+    cards.forEach(card => {
+
+        const cardStage =
+            card.dataset.stage;
+
+        if(stage === "all"){
+            card.style.display = "block";
+        }
+        else if(stage === "group"){
+            card.style.display =
+                ["16","8","4","2","1"]
+                .includes(cardStage)
+                ? "none"
+                : "block";
+        }
+        else{
+            card.style.display =
+                cardStage === stage
+                ? "block"
+                : "none";
+        }
+
+    });
+}
 async function saveAllPredictions() {
 
     const forms = document.querySelectorAll(".predict-form");
