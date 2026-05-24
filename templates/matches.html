@@ -84,13 +84,13 @@
     gap:6px;
     margin-bottom:12px;
 ">
-<button class="stage-filter" onclick="filterStage('all', this)" type="button">Todos</button>
-<button class="stage-filter" onclick="filterStage('group', this)" type="button">Grupos</button>
-<button class="stage-filter" onclick="filterStage('16', this)" type="button">16avos</button>
-<button class="stage-filter" onclick="filterStage('8', this)" type="button">8vos</button>
-<button class="stage-filter" onclick="filterStage('4', this)" type="button">Cuartos</button>
-<button class="stage-filter" onclick="filterStage('2', this)" type="button">Semi</button>
-<button class="stage-filter" onclick="filterStage('1', this)" type="button">Final</button>
+<button class="stage-filter" data-stage="all" onclick="filterStage('all', this)" type="button">Todos</button>
+<button class="stage-filter" data-stage="group" onclick="filterStage('group', this)" type="button">Grupos</button>
+<button class="stage-filter" data-stage="16" onclick="filterStage('16', this)" type="button">16avos</button>
+<button class="stage-filter" data-stage="8" onclick="filterStage('8', this)" type="button">8vos</button>
+<button class="stage-filter" data-stage="4" onclick="filterStage('4', this)" type="button">Cuartos</button>
+<button class="stage-filter" data-stage="2" onclick="filterStage('2', this)" type="button">Semi</button>
+<button class="stage-filter" data-stage="1" onclick="filterStage('1', this)" type="button">Final</button>
 
 </div>
 <h3 style="margin:10px 0;">
@@ -238,7 +238,7 @@ function change(id, delta) {
     input.value = value;
 }
 function filterStage(stage, btn){
-
+localStorage.setItem("stageFilter", stage);
     document
         .querySelectorAll(".stage-filter")
         .forEach(b => {
@@ -409,7 +409,20 @@ window.addEventListener("load", () => {
     }
 
 });
+window.addEventListener("load", () => {
 
+    const stage =
+        localStorage.getItem("stageFilter");
+
+    if (!stage) return;
+
+    const btn =
+        document.querySelector(
+            `.stage-filter[data-stage="${stage}"]`
+        );
+
+    filterStage(stage, btn);
+});
 </script>
 
 {% endblock %}
