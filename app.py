@@ -984,7 +984,10 @@ def matches():
     conn.close()
 
     # 🔧 FIX
-    now = datetime.now()
+    #now = datetime.now()
+    from datetime import timedelta
+
+    now = datetime.now() - timedelta(hours=3)
 
     matches = []
 
@@ -1096,9 +1099,9 @@ def predict():
         flash("Partido no definido todavía", "error")
         return redirect("/matches")
 
-    from datetime import datetime
+    from datetime import timedelta
 
-    now = datetime.now()
+    now = datetime.now() - timedelta(hours=3)
 
     # 🔧 FIX REAL
     match_time = datetime.fromisoformat(dt_str)
