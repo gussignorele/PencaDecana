@@ -74,7 +74,7 @@
     <div>✅ Acertar ganador o empate → <b>1 punto</b></div>
 
 </div>
-<div style="
+<div id="knockout-warning" style="
     background:#162447;
     border:1px solid #7c3aed;
     border-radius:10px;
@@ -82,7 +82,7 @@
     margin-bottom:12px;
     font-size:12px;
 ">
-⚠️ En fases eliminatorias, el pronóstico corresponde al resultado al finalizar los 90 minutos (o 120 si hay alargue), sin contar los penales.
+⚠️ En fases eliminatorias, el pronóstico corresponde al resultado al finalizar los 90 minutos ó 120 (si hay alargue), sin contar los penales.
 </div>
 <!-- 🔥 PENDIENTES -->
 <div id="pending-section">
@@ -259,6 +259,26 @@ localStorage.setItem("stageFilter", stage);
         btn.style.background = "#7c3aed";
         btn.style.color = "white";
     }
+
+
+const warning =
+    document.getElementById("knockout-warning");
+
+if (warning) {
+
+    if (
+        stage === "16" ||
+        stage === "8" ||
+        stage === "4" ||
+        stage === "2" ||
+        stage === "1"
+    ) {
+        warning.style.display = "block";
+    } else {
+        warning.style.display = "none";
+    }
+}
+
 
     const cards =
         document.querySelectorAll(".match-card");
