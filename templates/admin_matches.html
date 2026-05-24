@@ -87,10 +87,31 @@
 
 <!-- 🔥 GUARDAR TODO -->
 <form method="post" action="/admin/save_all">
+<div style="
+    display:flex;
+    gap:6px;
+    margin-bottom:12px;
+    overflow-x:auto;
+">
 
+<button onclick="filterStage('all')" type="button">Todos</button>
+<button onclick="filterStage('group')" type="button">Grupos</button>
+<button onclick="filterStage('16')" type="button">16avos</button>
+<button onclick="filterStage('8')" type="button">8vos</button>
+<button onclick="filterStage('4')" type="button">Cuartos</button>
+<button onclick="filterStage('2')" type="button">Semi</button>
+<button onclick="filterStage('1')" type="button">Final</button>
+
+</div>
 {% for m in matches %}
 
-<div class="{% if m[4] is none or m[5] is none %}pending{% endif %}" style="
+<div
+class="
+{% if m[4] is none or m[5] is none %}pending{% endif %}
+match-card
+"
+data-stage="{{m[6]}}"
+style="
     background:#1e3a8a;
     border-radius:12px;
     padding:10px;
@@ -208,6 +229,44 @@ function scrollToFirstPending() {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 }
+
+    
+function filterStage(stage){
+
+    const cards =
+        document.querySelectorAll(".match-card");
+
+    cards.forEach(card => {
+
+        const cardStage =
+            card.dataset.stage;
+
+        if(stage === "all"){
+            card.style.display = "block";
+        }
+        else if(stage === "group"){
+            if(
+                cardStage !== "16" &&
+                cardStage !== "8" &&
+                cardStage !== "4" &&
+                cardStage !== "2" &&
+                cardStage !== "1"
+            ){
+                card.style.display = "block";
+            }else{
+                card.style.display = "none";
+            }
+        }
+        else{
+            card.style.display =
+                cardStage === stage
+                ? "block"
+                : "none";
+        }
+
+    });
+}
+
 </script>
 
 {% endblock %}

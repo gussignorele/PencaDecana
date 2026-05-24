@@ -735,7 +735,67 @@ def delete_match(match_id):
     return redirect("/admin/matches")
 
 
+WORLD_CUP_TEAMS = [
+    "México",
+    "Sudáfrica",
+    "Corea del Sur",
+    "República Checa",
 
+    "Canadá",
+    "Bosnia y Herzegovina",
+    "Qatar",
+    "Suiza",
+
+    "Brasil",
+    "Marruecos",
+    "Haití",
+    "Escocia",
+
+    "Estados Unidos",
+    "Paraguay",
+    "Australia",
+    "Turquía",
+
+    "Alemania",
+    "Curazao",
+    "Costa de Marfil",
+    "Ecuador",
+
+    "Países Bajos",
+    "Japón",
+    "Suecia",
+    "Túnez",
+
+    "Bélgica",
+    "Egipto",
+    "Irán",
+    "Nueva Zelanda",
+
+    "España",
+    "Cabo Verde",
+    "Arabia Saudita",
+    "Uruguay",
+
+    "Francia",
+    "Senegal",
+    "Irak",
+    "Noruega",
+
+    "Argentina",
+    "Argelia",
+    "Austria",
+    "Jordania",
+
+    "Portugal",
+    "República Democrática del Congo",
+    "Uzbekistán",
+    "Colombia",
+
+    "Inglaterra",
+    "Croacia",
+    "Ghana",
+    "Panamá"
+]
 @app.route("/admin/matches", methods=["GET", "POST"])
 def admin_matches():
     if not is_admin():
@@ -810,14 +870,29 @@ def admin_matches():
     """)
 
     matches = c.fetchall()
-    teams = list(get_country_codes().keys())
-
     conn.close()
+
+    grouped_matches = {
+        "G": [],
+        "16": [],
+        "8": [],
+        "4": [],
+        "2": [],
+        "1": []
+    }
+
+    for m in matches:
+        grouped_matches[str(m[6])].append(m)
+
+    #teams = list(get_country_codes().keys())
+    teams = sorted(WORLD_CUP_TEAMS)
+
 
     return render_template(
         "admin_matches.html",
         matches=matches,
         teams=teams,
+        grouped_matches=grouped_matches,
         country_codes=get_country_codes()
     )
 @app.route("/admin/save_all", methods=["POST"])
