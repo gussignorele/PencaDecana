@@ -661,6 +661,79 @@ def webhook():
 
         return "ERROR", 500
 
+@app.route("/admin/create_match", methods=["POST"])
+def create_match():
+
+    if not is_admin():
+        return redirect("/")
+
+    home = request.form["home"]
+    away = request.form["away"]
+
+    match_date = request.form["match_date"]
+    match_time = request.form["match_time"]
+
+    stage = request.form["stage"]
+
+    if home == away:
+        flash("No puede ser el mismo equipo")
+        return redirect("/admin/matches")
+
+    dt = f"{match_date}T{match_time}:00"
+
+    conn = get_db()
+    c = conn.cursor()
+
+    c.execute("""
+        INSERT INTO matches (
+            home,
+            away,
+            match_datetime,
+            stage
+        )
+        VALUES (?, ?, ?, ?)
+    """, (
+        home,
+        away,
+        dt,
+        stage
+    ))
+
+    conn.commit()
+    conn.close()
+
+    flash("Partido creado", "success")
+
+    return redirect("/admin/matches")
+
+
+
+@app.route("/admin/delete_match/<int:match_id>")
+def delete_match(match_id):
+
+    if not is_admin():
+        return redirect("/")
+
+    conn = get_db()
+    c = conn.cursor()
+
+    c.execute("""
+        DELETE FROM predictions
+        WHERE match_id=?
+    """, (match_id,))
+
+    c.execute("""
+        DELETE FROM matches
+        WHERE id=?
+    """, (match_id,))
+
+    conn.commit()
+    conn.close()
+
+    flash("Partido eliminado", "success")
+
+    return redirect("/admin/matches")
+
 
 
 @app.route("/admin/matches", methods=["GET", "POST"])

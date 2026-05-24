@@ -166,7 +166,21 @@
         ">
     Guardar
 </button>
-
+<a href="/admin/delete_match/{{m[0]}}"
+   onclick="return confirm('¿Eliminar partido?')"
+   style="
+      display:block;
+      text-align:center;
+      margin-top:6px;
+      padding:6px;
+      border-radius:6px;
+      background:#ef4444;
+      color:white;
+      text-decoration:none;
+      font-size:12px;
+   ">
+   🗑 Eliminar
+</a>
 </div>
 
 {% endfor %}
