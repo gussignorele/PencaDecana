@@ -78,12 +78,12 @@
 <!-- 🔥 PENDIENTES -->
 <div id="pending-section">
 <div style="
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:4px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
     margin-bottom:12px;
 ">
-
 <button class="stage-filter" onclick="filterStage('all', this)" type="button">Todos</button>
 <button class="stage-filter" onclick="filterStage('group', this)" type="button">Grupos</button>
 <button class="stage-filter" onclick="filterStage('16', this)" type="button">16avos</button>
