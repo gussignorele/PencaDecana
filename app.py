@@ -872,17 +872,7 @@ def admin_matches():
     matches = c.fetchall()
     conn.close()
 
-    grouped_matches = {
-        "G": [],
-        "16": [],
-        "8": [],
-        "4": [],
-        "2": [],
-        "1": []
-    }
 
-    for m in matches:
-        grouped_matches[str(m[6])].append(m)
 
     #teams = list(get_country_codes().keys())
     teams = sorted(WORLD_CUP_TEAMS)
@@ -892,7 +882,6 @@ def admin_matches():
         "admin_matches.html",
         matches=matches,
         teams=teams,
-        grouped_matches=grouped_matches,
         country_codes=get_country_codes()
     )
 @app.route("/admin/save_all", methods=["POST"])
