@@ -88,19 +88,19 @@
 <!-- 🔥 GUARDAR TODO -->
 <form method="post" action="/admin/save_all">
 <div style="
-    display:flex;
-    gap:6px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
     margin-bottom:12px;
-    overflow-x:auto;
 ">
 
-<button onclick="filterStage('all')" type="button">Todos</button>
-<button onclick="filterStage('group')" type="button">Grupos</button>
-<button onclick="filterStage('16')" type="button">16avos</button>
-<button onclick="filterStage('8')" type="button">8vos</button>
-<button onclick="filterStage('4')" type="button">Cuartos</button>
-<button onclick="filterStage('2')" type="button">Semi</button>
-<button onclick="filterStage('1')" type="button">Final</button>
+<button class="stage-filter" onclick="filterStage('all', this)" type="button">Todos</button>
+<button class="stage-filter" onclick="filterStage('group', this)" type="button">Grupos</button>
+<button class="stage-filter" onclick="filterStage('16', this)" type="button">16avos</button>
+<button class="stage-filter" onclick="filterStage('8', this)" type="button">8vos</button>
+<button class="stage-filter" onclick="filterStage('4', this)" type="button">Cuartos</button>
+<button class="stage-filter" onclick="filterStage('2', this)" type="button">Semi</button>
+<button class="stage-filter" onclick="filterStage('1', this)" type="button">Final</button>
 
 </div>
 {% for m in matches %}
@@ -229,9 +229,19 @@ function scrollToFirstPending() {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 }
+function filterStage(stage, btn){
 
+    document
+        .querySelectorAll(".stage-filter")
+        .forEach(b => {
+            b.style.background = "white";
+            b.style.color = "black";
+        });
 
-function filterStage(stage){
+    if(btn){
+        btn.style.background = "#7c3aed";
+        btn.style.color = "white";
+    }
 
     const cards =
         document.querySelectorAll(".match-card");
@@ -265,7 +275,7 @@ function filterStage(stage){
         }
 
     });
-}
+}   
 
 </script>
 
