@@ -1351,7 +1351,7 @@ def user_detail(username):
         FROM matches m
         LEFT JOIN predictions p
             ON m.id = p.match_id AND p.user = ?
-        ORDER BY m.match_datetime
+        ORDER BY m.match_datetime DESC
     """, (username,))
     rows = c.fetchall()
     conn.close()
