@@ -1101,6 +1101,16 @@ def matches():
         else:
             pending_matches.append(m)
     is_admin_user = user == "gsignorele"
+
+    predicted_matches.sort(
+        key=lambda x: x["match_datetime"],
+        reverse=True
+    )
+
+    closed_matches.sort(
+        key=lambda x: x["match_datetime"],
+        reverse=True
+    )
     return render_template(
         "matches.html",
         pending_matches=pending_matches,
