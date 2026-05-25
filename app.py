@@ -126,7 +126,7 @@ def get_country_codes():
 # DB
 # =========================
 def get_db():
-    return sqlite3.connect(DB)
+    return sqlite3.connect(DB, timeout=30)
 
 @app.route("/avatars/<filename>")
 def avatars(filename):
@@ -796,16 +796,18 @@ WORLD_CUP_TEAMS = [
     "Ghana",
     "Panamá"
 ]
+
+
 @app.route("/admin/matches", methods=["GET", "POST"])
 def admin_matches():
+
     if not is_admin():
         return redirect("/")
 
-    conn = get_db()
-    c = conn.cursor()
-
-    from datetime import datetime
     if request.method == "POST":
+
+        conn = get_db()
+        c = conn.cursor()
 
         match_ids = []
 
@@ -827,24 +829,23 @@ def admin_matches():
             home_goals = int(home_goals) if home_goals else None
             away_goals = int(away_goals) if away_goals else None
 
-            # fecha/hora
             if not date or not time:
                 continue
 
             new_dt = f"{date}T{time}:00"
 
-            # validaciones
             valid_teams = get_country_codes().keys()
 
             if home == away:
+                conn.close()
                 flash("No puede ser el mismo equipo")
                 return redirect("/admin/matches")
 
             if home not in valid_teams or away not in valid_teams:
+                conn.close()
                 flash("Equipo inválido")
                 return redirect("/admin/matches")
 
-            # update
             c.execute("""
                 UPDATE matches
                 SET home=?, away=?, match_datetime=?,
@@ -860,8 +861,13 @@ def admin_matches():
             ))
 
         conn.commit()
+        conn.close()
 
-    # 🔥 cargar
+        return redirect("/admin/matches")
+
+    conn = get_db()
+    c = conn.cursor()
+
     c.execute("""
         SELECT id, home, away, match_datetime,
                home_goals, away_goals, stage
@@ -870,13 +876,10 @@ def admin_matches():
     """)
 
     matches = c.fetchall()
+
     conn.close()
 
-
-
-    #teams = list(get_country_codes().keys())
     teams = sorted(WORLD_CUP_TEAMS)
-
 
     return render_template(
         "admin_matches.html",
@@ -884,6 +887,9 @@ def admin_matches():
         teams=teams,
         country_codes=get_country_codes()
     )
+
+
+
 @app.route("/admin/save_all", methods=["POST"])
 def admin_save_all():
     if not is_admin():
