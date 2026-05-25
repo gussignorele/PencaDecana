@@ -102,7 +102,7 @@
 <button class="stage-filter" data-stage="1" onclick="filterStage('1', this)" type="button">Final</button>
 
 </div>
-<h3 style="margin:10px 0;">
+<h3 id="pending-title" style="margin:10px 0;">
     ⏳ Pendientes ({{ pending_matches|length }})
 </h3>
 
@@ -130,7 +130,7 @@
 <!-- 🔥 YA PRONOSTICADOS -->
 <div id="predicted-section" style="margin-top:18px;">
 
-<button onclick="toggleSection('predicted')" style="
+<button id="predicted-title" onclick="toggleSection('predicted')" style="
     width:100%;
     padding:8px;
     border:none;
@@ -141,7 +141,6 @@
 ">
     ✅ Mostrar ya pronosticados ({{ predicted_matches|length }})
 </button>
-
 <div id="predicted" style="display:none; margin-top:10px;">
 
     {% for m in predicted_matches %}
@@ -154,8 +153,7 @@
 
 <!-- 🔥 CERRADOS -->
 <div id="closed-section" style="margin-top:12px; margin-bottom:20px;">
-
-<button onclick="toggleSection('closed')" style="
+<button id="closed-title" onclick="toggleSection('closed')" style="
     width:100%;
     padding:8px;
     border:none;
@@ -166,7 +164,6 @@
 ">
     🔒 Mostrar cerrados ({{ closed_matches|length }})
 </button>
-
 <div id="closed" style="display:none; margin-top:10px;">
 
     {% for m in closed_matches %}
@@ -306,6 +303,29 @@ if (warning) {
         }
 
     });
+    const pendingVisible =
+    document.querySelectorAll(
+        "#pending-section .match-card:not([style*='display: none'])"
+    ).length;
+
+const predictedVisible =
+    document.querySelectorAll(
+        "#predicted .match-card:not([style*='display: none'])"
+    ).length;
+
+const closedVisible =
+    document.querySelectorAll(
+        "#closed .match-card:not([style*='display: none'])"
+    ).length;
+
+document.getElementById("pending-title").innerHTML =
+    `⏳ Pendientes (${pendingVisible})`;
+
+document.getElementById("predicted-title").innerHTML =
+    `✅ Mostrar ya pronosticados (${predictedVisible})`;
+
+document.getElementById("closed-title").innerHTML =
+    `🔒 Mostrar cerrados (${closedVisible})`;
 }
 async function saveAllPredictions() {
 
@@ -368,8 +388,8 @@ async function saveAllPredictions() {
             "#pending-section div[data-pending='1']"
         );
 
-    const pendingTitle =
-        document.querySelector("#pending-section h3");
+const pendingTitle =
+    document.getElementById("pending-title");
 
     if (pendingTitle) {
         pendingTitle.innerHTML =
