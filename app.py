@@ -734,16 +734,15 @@ def delete_match(match_id):
 
     return redirect("/admin/matches")
 
-
 WORLD_CUP_TEAMS = [
     "México",
     "Sudáfrica",
     "Corea del Sur",
-    "República Checa",
+    "Chequia",
 
     "Canadá",
     "Bosnia y Herzegovina",
-    "Qatar",
+    "Catar",
     "Suiza",
 
     "Brasil",
@@ -787,7 +786,7 @@ WORLD_CUP_TEAMS = [
     "Jordania",
 
     "Portugal",
-    "República Democrática del Congo",
+    "RD Congo",
     "Uzbekistán",
     "Colombia",
 
@@ -796,7 +795,6 @@ WORLD_CUP_TEAMS = [
     "Ghana",
     "Panamá"
 ]
-
 
 @app.route("/admin/matches", methods=["GET", "POST"])
 def admin_matches():
@@ -888,38 +886,6 @@ def admin_matches():
         country_codes=get_country_codes()
     )
 
-@app.route("/admin/check_teams")
-def admin_check_teams():
-
-    if not is_admin():
-        return redirect("/")
-
-    conn = get_db()
-    c = conn.cursor()
-
-    c.execute("""
-        SELECT home FROM matches
-        UNION
-        SELECT away FROM matches
-        ORDER BY 1
-    """)
-
-    teams_db = [r[0] for r in c.fetchall()]
-
-    conn.close()
-
-    html = "<h2>Equipos en la BD</h2><ul>"
-
-    for t in teams_db:
-
-        if t in WORLD_CUP_TEAMS:
-            html += f"<li>✅ {t}</li>"
-        else:
-            html += f"<li style='color:red'>❌ {t}</li>"
-
-    html += "</ul>"
-
-    return html
 
 @app.route("/admin/save_all", methods=["POST"])
 def admin_save_all():
