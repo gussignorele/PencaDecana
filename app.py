@@ -359,7 +359,9 @@ def reset(token):
 @app.route("/", methods=["GET", "POST"])
 @limiter.limit("10 per minute")
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"].strip().lower()
         password = request.form["password"]
 
@@ -372,19 +374,33 @@ def login():
         conn = get_db()
         c = conn.cursor()
 
-        c.execute("SELECT password FROM users WHERE username=?", (username,))
+        c.execute(
+            "SELECT password FROM users WHERE username=?",
+            (username,)
+        )
+
         row = c.fetchone()
+
         conn.close()
 
         if row and check_password_hash(row[0], password):
+
             session["user"] = username
-            session["is_admin"] = is_admin()  # ✔ correcto acá
+            session["is_admin"] = is_admin()
+
+            if request.args.get("app") == "1":
+                token = generar_token(username)
+                return redirect(f"/autologin/{token}")
+
             return redirect("/matches")
 
         flash("Usuario o contraseña incorrectos", "error")
         return redirect("/")
 
-    return render_template("login.html", full_screen=True)
+    return render_template(
+        "login.html",
+        full_screen=True
+    )
 
 from flask import jsonify
 from flask_limiter.errors import RateLimitExceeded
@@ -1128,7 +1144,35 @@ def matches():
             "Gales": url_for('static', filename='flags/wales.png'),
         }
     )
+@app.route("/autologin/<token>")
+def autologin(token):
 
+    username = validar_token(token)
+
+    if not username:
+        return "invalid"
+
+    session["user"] = username
+    session["is_admin"] = False
+
+    return redirect("/matches")
+import time
+
+def generar_token(username):
+    return f"{username}:{int(time.time())}"
+
+def validar_token(token):
+    try:
+        username, ts = token.split(":")
+        if int(time.time()) - int(ts) > 60:
+            return None
+        return username
+    except:
+        return None
+
+
+
+"""
 @app.route("/admin/delete_match_by_teams")
 def delete_match_by_teams():
 
@@ -1166,7 +1210,7 @@ def delete_match_by_teams():
     conn.close()
 
     return redirect("/admin/matches")
-
+"""
 # =========================
 # PREDICT
 # =========================
