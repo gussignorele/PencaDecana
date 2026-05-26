@@ -1172,45 +1172,7 @@ def validar_token(token):
 
 
 
-"""
-@app.route("/admin/delete_match_by_teams")
-def delete_match_by_teams():
 
-    if not is_admin():
-        return redirect("/")
-
-    conn = get_db()
-    c = conn.cursor()
-
-    c.execute("""
-        SELECT id
-        FROM matches
-        WHERE home='Turquía'
-          AND away='República Democrática del Congo'
-    """)
-
-    row = c.fetchone()
-
-    if row:
-
-        match_id = row[0]
-
-        c.execute(
-            "DELETE FROM predictions WHERE match_id=?",
-            (match_id,)
-        )
-
-        c.execute(
-            "DELETE FROM matches WHERE id=?",
-            (match_id,)
-        )
-
-        conn.commit()
-
-    conn.close()
-
-    return redirect("/admin/matches")
-"""
 # =========================
 # PREDICT
 # =========================
