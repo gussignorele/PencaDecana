@@ -1153,9 +1153,13 @@ def autologin(token):
         return "invalid"
 
     session["user"] = username
-    session["is_admin"] = False
+
+    session["is_admin"] = (
+        username == "gsignorele"
+    )
 
     return redirect("/matches")
+
 import time
 
 def generar_token(username):
@@ -1675,6 +1679,12 @@ def inject_user():
         "user": session.get("user"),
         "ENTRY_PRICE": ENTRY_PRICE
     }
+
+@app.context_processor
+def inject_admin():
+    return dict(is_admin=is_admin)
+
+
 if __name__ == "__main__":
     #app.run(host="0.0.0.0", port=5000, debug=True)
     app.run(debug=True)

@@ -149,7 +149,7 @@
         <span>Ranking</span>
     </a>
 
-    {% if session.get("is_admin") %}
+    {% if is_admin() %}
     <a href="/admin/matches" class="{% if request.path == '/admin/matches' %}active{% endif %}">
         ⚙️
         <span>Admin</span>
