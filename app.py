@@ -1413,8 +1413,8 @@ def user_detail(username):
         FROM matches m
         LEFT JOIN predictions p
             ON m.id = p.match_id AND p.user = ?
-        ORDER BY m.match_datetime DESC
-    """, (username,))
+            ORDER BY m.match_datetime""", (
+    username,))
     rows = c.fetchall()
     conn.close()
 
@@ -1469,7 +1469,31 @@ def user_detail(username):
             "stage": stage,
             "pts": pts
         })
+    played_or_predicted = []
+    future_unpredicted = []
 
+    for m in matches:
+
+        has_prediction = (
+                m["pred_home"] is not None and
+                m["pred_away"] is not None
+        )
+
+        if m["finished"] or has_prediction:
+            played_or_predicted.append(m)
+        else:
+            future_unpredicted.append(m)
+
+    played_or_predicted.sort(
+        key=lambda x: x["datetime"],
+        reverse=True
+    )
+
+    future_unpredicted.sort(
+        key=lambda x: x["datetime"]
+    )
+
+    matches = played_or_predicted + future_unpredicted
     return render_template(
         "user_detail.html",
         matches=matches,
