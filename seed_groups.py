@@ -9,6 +9,8 @@ def seed():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
 
+    #c.execute("DELETE FROM matches")
+    c.execute("DELETE FROM predictions")
     c.execute("DELETE FROM matches")
 
     matches = pd.read_csv("matches.csv")

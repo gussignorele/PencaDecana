@@ -1671,6 +1671,21 @@ def admin_users():
         deben=deben
     )
 
+@app.route("/admin/full_reset")
+def full_reset():
+
+    if not is_admin():
+        return redirect("/")
+
+    import seed_groups
+
+    seed_groups.seed()
+
+    flash("Penca reiniciada correctamente", "success")
+
+    return redirect("/admin/matches")
+
+
 
 @app.context_processor
 def inject_user():
