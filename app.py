@@ -856,6 +856,7 @@ def admin_matches():
             new_dt = f"{date}T{time}:00"
 
             valid_teams = get_country_codes().keys()
+            """
             print(
                 "MATCH:",
                 match_id,
@@ -864,10 +865,9 @@ def admin_matches():
                 "AWAY:",
                 away
             )
+            """
             if home == away:
-                conn.close()
-                flash("No puede ser el mismo equipo")
-                return redirect("/admin/matches")
+                continue
 
             if home not in valid_teams or away not in valid_teams:
                 conn.close()
