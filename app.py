@@ -830,6 +830,13 @@ def admin_matches():
                 match_ids.append(key.replace("match_", ""))
 
         for match_id in match_ids:
+            print("MATCH:", match_id)
+
+            home = request.form.get(f"home_{match_id}")
+            away = request.form.get(f"away_{match_id}")
+
+            print("HOME:", home)
+            print("AWAY:", away)
 
             home = request.form.get(f"home_{match_id}")
             away = request.form.get(f"away_{match_id}")
@@ -849,7 +856,14 @@ def admin_matches():
             new_dt = f"{date}T{time}:00"
 
             valid_teams = get_country_codes().keys()
-
+            print(
+                "MATCH:",
+                match_id,
+                "HOME:",
+                home,
+                "AWAY:",
+                away
+            )
             if home == away:
                 conn.close()
                 flash("No puede ser el mismo equipo")
