@@ -588,6 +588,7 @@ def profile():
 # =========================
 @app.route("/crear_pago")
 def crear_pago():
+
     if not PAYMENTS_ENABLED:
         return redirect("/matches")
 
@@ -596,23 +597,55 @@ def crear_pago():
 
     user = session["user"]
 
+    conn = get_db()
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT email, telefono
+        FROM users
+        WHERE username=?
+    """, (user,))
+
+    row = c.fetchone()
+
+    conn.close()
+
+    email = row[0] if row else ""
+    telefono = row[1] if row else ""
+
     payload = {
         "items": [{
-            "title": "Penca Mundial",
+            "title": f"Penca Decana - {user}",
             "quantity": 1,
             "unit_price": int(ENTRY_PRICE)
         }],
-        "metadata": {"user": user},
+
+        "payer": {
+            "email": email
+        },
+
+        "external_reference": user,
+
+        "metadata": {
+            "user": user,
+            "email": email,
+            "telefono": telefono
+        },
+
         "notification_url": "https://pencadecana.onrender.com/webhook",
+
         "back_urls": {
             "success": "https://pencadecana.onrender.com/matches",
             "failure": "https://pencadecana.onrender.com/matches",
             "pending": "https://pencadecana.onrender.com/matches"
         },
+
         "auto_return": "approved"
     }
 
-    headers = {"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
+    headers = {
+        "Authorization": f"Bearer {MP_ACCESS_TOKEN}"
+    }
 
     r = requests.post(
         "https://api.mercadopago.com/checkout/preferences",
@@ -626,7 +659,6 @@ def crear_pago():
         return f"Error MercadoPago: {data}"
 
     return redirect(data["init_point"])
-
 
 
 @app.route("/webhook", methods=["POST"])
