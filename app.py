@@ -113,8 +113,9 @@ def get_country_codes():
         "Sudáfrica": "za",
         "Chequia": "cz",
         "Haití": "ht",
+        "Curazao": "cw",
         "Curaçao": "cw",
-        "Curacao": "cw",  # 🔥 por si viene sin ç
+        "Curacao": "cw",
         "Irak": "iq",
         "Jordania": "jo",
         "RD Congo": "cd",
