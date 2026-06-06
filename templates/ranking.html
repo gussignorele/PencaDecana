@@ -12,10 +12,14 @@
 ">
     👆 Tocá un usuario para ver sus pronósticos
 </div>
+
 {% for r in ranking %}
 
 <div style="
-    background:#1e3a8a;
+    background:{% if r.user == user %}#2d4fc7{% else %}#1e3a8a{% endif %};
+    {% if r.user == user %}
+box-shadow:0 0 12px rgba(255,255,255,0.15);
+{% endif %}
     border-radius:14px;
     padding:14px;
     margin-bottom:10px;
@@ -66,7 +70,9 @@
         color:white;
         text-decoration:none;
     ">
-        {{ r.user }} {% if r.pos == 1 %}👑{% endif %}
+        {{ r.user }}
+{% if r.user == user %}📍{% endif %}
+{% if r.pos == 1 %}👑{% endif %}
     </a>
 
     <div style="font-size:12px; color:#cbd5f5;">
