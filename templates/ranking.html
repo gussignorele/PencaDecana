@@ -12,10 +12,28 @@
 ">
     👆 Tocá un usuario para ver sus pronósticos
 </div>
-
+{% for r in ranking %}
+    {% if r.user == user %}
+    <div style="text-align:center; margin-bottom:15px;">
+        <a href="#mi-posicion" style="
+            background:#facc15;
+            color:black;
+            padding:8px 12px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:13px;
+        ">
+            📍 Mi posición (#{{ r.pos }})
+        </a>
+    </div>
+    {% endif %}
+{% endfor %}
 {% for r in ranking %}
 
-<div style="
+<div
+{% if r.user == user %}id="mi-posicion"{% endif %}
+style="
     background:{% if r.user == user %}#2d4fc7{% else %}#1e3a8a{% endif %};
     {% if r.user == user %}
 box-shadow:0 0 12px rgba(255,255,255,0.15);
