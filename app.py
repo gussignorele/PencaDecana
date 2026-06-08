@@ -219,11 +219,8 @@ def send_email(to, subject, body):
 
 from flask import flash, redirect, url_for
 
-@app.route("/admin/test_match_reminders")
+@app.route("/cron/match_reminders")
 def test_match_reminders():
-
-    if not is_admin():
-        return redirect("/")
 
     from datetime import datetime, timedelta
 
@@ -293,7 +290,7 @@ def test_match_reminders():
                 continue
 
             send_email(
-                "gsignorele@gmail.com",
+                email,
                 "⚽ No olvides tu pronóstico",
                 f"""
                 <h2>🏀 Penca Decana</h2>
@@ -301,7 +298,7 @@ def test_match_reminders():
                 <p>Hola <b>{username}</b>.</p>
 
                 <p>
-                Falta menos de una hora para:
+                Falta menos de una hora para que cierre el pronóstico de:
                 </p>
 
                 <p>
@@ -325,10 +322,22 @@ def test_match_reminders():
                 """
             )
             resultado.append(
-                f"Mail enviado a Gustavo por {username} - {home} vs {away}"
+                f"Mail enviado a {username} - {home} vs {away}"
             )
 
-
+            c.execute("""
+                            INSERT INTO reminder_log (
+                                user,
+                                match_id,
+                                sent_at
+                            )
+                            VALUES (?, ?, ?)
+                        """, (
+                username,
+                match_id,
+                datetime.now().isoformat()
+            ))
+            conn.commit()
 
     conn.close()
 
