@@ -324,19 +324,11 @@ def test_match_reminders():
                 </p>
                 """
             )
-            c.execute("""
-                INSERT INTO reminder_log (
-                    user,
-                    match_id,
-                    sent_at
-                )
-                VALUES (?, ?, ?)
-            """, (
-                username,
-                match_id,
-                datetime.now().isoformat()
-            ))
-            conn.commit()
+            resultado.append(
+                f"Mail enviado a Gustavo por {username} - {home} vs {away}"
+            )
+
+
 
     conn.close()
 
