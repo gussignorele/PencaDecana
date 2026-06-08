@@ -218,6 +218,7 @@ def send_email(to, subject, body):
         server.send_message(msg)
 
 from flask import flash, redirect, url_for
+
 @app.route("/admin/test_match_reminders")
 def test_match_reminders():
 
@@ -253,7 +254,7 @@ def test_match_reminders():
 
         except:
             continue
-            
+
         if not (limit_min <= match_time <= limit_max):
             continue
 
@@ -291,9 +292,51 @@ def test_match_reminders():
             if already_sent:
                 continue
 
-            resultado.append(
-                f"{username} ({email}) → {home} vs {away} [{dt}]"
+            send_email(
+                "gsignorele@gmail.com",
+                "⚽ No olvides tu pronóstico",
+                f"""
+                <h2>🏀 Penca Decana</h2>
+
+                <p>Hola <b>{username}</b>.</p>
+
+                <p>
+                Falta menos de una hora para:
+                </p>
+
+                <p>
+                <b>{home} vs {away}</b>
+                </p>
+
+                <p>
+                Todavía estás a tiempo de sumar puntos.
+                Ingresá ahora y registrá tu pronóstico.
+                </p>
+
+                <p>
+                <a href="https://pencadecana.onrender.com">
+                    👉 Ingresar a la Penca Decana
+                </a>
+                </p>
+
+                <p>
+                ¡Mucha suerte!
+                </p>
+                """
             )
+            c.execute("""
+                INSERT INTO reminder_log (
+                    user,
+                    match_id,
+                    sent_at
+                )
+                VALUES (?, ?, ?)
+            """, (
+                username,
+                match_id,
+                datetime.now().isoformat()
+            ))
+            conn.commit()
 
     conn.close()
 
@@ -301,6 +344,8 @@ def test_match_reminders():
         return "No hay recordatorios pendientes"
 
     return "<br>".join(resultado)
+
+
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot():
     if request.method == "POST":
