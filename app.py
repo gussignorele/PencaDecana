@@ -660,7 +660,41 @@ def crear_pago():
 
     return redirect(data["init_point"])
 
+@app.route("/admin/test_payment_reminder")
+def test_payment_reminder():
 
+    if not is_admin():
+        return redirect("/")
+
+    send_email(
+        "gsignorele@gmail.com",
+        "⚽ Últimos días para sumarte a la Penca Decana",
+        """
+        <h2>🏀 Penca Decana</h2>
+
+        <p>Hola Gustavo.</p>
+
+        <p>
+        El Mundial está por comenzar y todavía no registramos tu pago.
+        </p>
+
+        <p>
+        Sumate a la penca, colaborá con el Decano y participá por los premios.
+        </p>
+
+        <p>
+        <a href="https://pencadecana.onrender.com">
+            👉 Ingresar a la Penca Decana
+        </a>
+        </p>
+
+        <p>
+        ¡Mucha suerte!
+        </p>
+        """
+    )
+
+    return "mail enviado"
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
