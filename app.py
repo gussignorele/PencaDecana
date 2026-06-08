@@ -662,39 +662,66 @@ def crear_pago():
 
 @app.route("/admin/test_payment_reminder")
 def test_payment_reminder():
-
     if not is_admin():
         return redirect("/")
 
-    send_email(
-        "gsignorele@gmail.com",
-        "⚽ Últimos días para sumarte a la Penca Decana",
-        """
-        <h2>🏀 Penca Decana</h2>
+    conn = get_db()
+    c = conn.cursor()
 
-        <p>Hola Gustavo.</p>
+    c.execute("""
+        SELECT username, email
+        FROM users
+        WHERE email = 'gsignorele@gmail.com'
+          AND email IS NOT NULL
+          AND email <> ''
+    """)
 
-        <p>
-        El Mundial está por comenzar y todavía no registramos tu pago.
-        </p>
+    users = c.fetchall()
 
-        <p>
-        Sumate a la penca, colaborá con el Decano y participá por los premios.
-        </p>
+    enviados = []
 
-        <p>
-        <a href="https://pencadecana.onrender.com">
-            👉 Ingresar a la Penca Decana
-        </a>
-        </p>
+    for username, email in users:
 
-        <p>
-        ¡Mucha suerte!
-        </p>
-        """
-    )
+        send_email(
+            email,
+            "Sumate a la Penca Decana",
+            f"""
+            <h2>🏀 Penca Decana</h2>
+    
+             <p>Hola <b>{username}</b>.</p>
+    
+            <p>
+            El Mundial está por comenzar y todavía no registramos tu pago.
+            </p>
+            <p>
+            ⚠️ Recordá que es un único pago de $200 para habilitar tu participación en la competencia.
+            </p>
+            <p>
+            Sumate a la penca, colaborá con las Decanas y participá por los fabulosos premios.
+            </p>
+    
+            <p>
+            <a href="https://pencadecana.onrender.com">
+                👉 Ingresar a la Penca Decana
+            </a>
+            </p>
+    
+            <p>
+            ¡Mucha suerte!
+            </p>
+            """
+        )
 
-    return "mail enviado"
+        enviados.append(
+            f"{username} - {email}"
+         )
+
+    conn.close()
+
+    return "<br>".join(enviados)
+
+
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
