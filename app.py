@@ -181,6 +181,16 @@ def init_db():
     )
     """)
 
+    # REMINDER LOG
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS reminder_log (
+        user TEXT,
+        match_id INTEGER,
+        sent_at TEXT,
+        UNIQUE(user, match_id)
+    )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -208,7 +218,89 @@ def send_email(to, subject, body):
         server.send_message(msg)
 
 from flask import flash, redirect, url_for
+@app.route("/admin/test_match_reminders")
+def test_match_reminders():
 
+    if not is_admin():
+        return redirect("/")
+
+    from datetime import datetime, timedelta
+
+    now = datetime.now() - timedelta(hours=3)
+
+    limit_min = now + timedelta(minutes=45)
+    limit_max = now + timedelta(minutes=75)
+
+    conn = get_db()
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT id, home, away, match_datetime
+        FROM matches
+    """)
+
+    matches = c.fetchall()
+
+    resultado = []
+
+    for match_id, home, away, dt in matches:
+
+        try:
+            match_time = datetime.fromisoformat(dt)
+
+            if match_time.tzinfo:
+                match_time = match_time.replace(tzinfo=None)
+
+        except:
+            continue
+            
+        if not (limit_min <= match_time <= limit_max):
+            continue
+
+        c.execute("""
+            SELECT username, email
+            FROM users
+            WHERE paid = 1
+        """)
+
+        users = c.fetchall()
+
+        for username, email in users:
+
+            c.execute("""
+                SELECT 1
+                FROM predictions
+                WHERE user=?
+                AND match_id=?
+            """, (username, match_id))
+
+            pred = c.fetchone()
+
+            if pred:
+                continue
+
+            c.execute("""
+                SELECT 1
+                FROM reminder_log
+                WHERE user=?
+                AND match_id=?
+            """, (username, match_id))
+
+            already_sent = c.fetchone()
+
+            if already_sent:
+                continue
+
+            resultado.append(
+                f"{username} ({email}) → {home} vs {away} [{dt}]"
+            )
+
+    conn.close()
+
+    if not resultado:
+        return "No hay recordatorios pendientes"
+
+    return "<br>".join(resultado)
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot():
     if request.method == "POST":
@@ -671,7 +763,7 @@ def test_payment_reminder():
     c.execute("""
         SELECT username, email
         FROM users
-        WHERE email = 'gsignorele@gmail.com'
+        WHERE paid = 0 
           AND email IS NOT NULL
           AND email <> ''
     """)
@@ -697,7 +789,7 @@ def test_payment_reminder():
             ⚠️ Recordá que es un único pago de $200 para habilitar tu participación en la competencia.
             </p>
             <p>
-            Sumate a la penca, colaborá con las Decanas y participá por los fabulosos premios.
+            Sumate a la penca, colaborá con las Decanas y participá por fabulosos premios.
             </p>
     
             <p>
